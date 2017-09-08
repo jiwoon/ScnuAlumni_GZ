@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+  <display-name>ScnuAlumni_GZ</display-name>
+  <welcome-file-list>
+    <welcome-file>myIndex.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>OAuthServlet</servlet-name>
+    <servlet-class>com.newttl.scnualumni.servlet.OAuthServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OAuthServlet</servlet-name>
+    <url-pattern>/OAuthServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>WxServlet</servlet-name>
+    <servlet-class>com.newttl.scnualumni.servlet.WxServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>WxServlet</servlet-name>
+    <url-pattern>/WxServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>SignUpServlet</servlet-name>
+    <servlet-class>com.newttl.scnualumni.servlet.SignUpServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SignUpServlet</servlet-name>
+    <url-pattern>/SignUpServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>ImageCodeServlet</servlet-name>
+    <servlet-class>com.newttl.scnualumni.servlet.ImageCodeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ImageCodeServlet</servlet-name>
+    <url-pattern>/ImageCodeServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>SendPosterServlet</servlet-name>
+    <servlet-class>com.newttl.scnualumni.servlet.SendPosterServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SendPosterServlet</servlet-name>
+    <url-pattern>/SendPosterServlet</url-pattern>
+  </servlet-mapping>
+</web-app>
