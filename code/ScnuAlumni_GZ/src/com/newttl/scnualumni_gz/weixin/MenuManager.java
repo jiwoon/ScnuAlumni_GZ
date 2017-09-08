@@ -30,12 +30,17 @@ public class MenuManager {
 	private static Menu getMenu(){
 		
 		ViewButton b11=new ViewButton();
-		b11.setName("华师新闻");
+		b11.setName("华师新闻网");
 		b11.setType("view");
 		b11.setUrl("http://news.scnu.edu.cn");
 		
+		ViewButton b12=new ViewButton();
+		b12.setName("华师官方微博");
+		b12.setType("view");
+		b12.setUrl("http://weibo.com/u/5338220864?from=feed&loc=nickname");
+		
 		ClickButton b21=new ClickButton();
-		b21.setName("二维码");
+		b21.setName("校友风采");
 		b21.setType("click");
 		b21.setKey("qrcode");
 		
@@ -64,12 +69,16 @@ public class MenuManager {
 		b33.setType("view");
 		b33.setUrl(WeiXinCommon.SchoolMateUrl);
 		
+		ComplexButton mainB1=new ComplexButton();
+		mainB1.setName("新闻");
+		mainB1.setSub_button(new Button[]{b11,b12});
+		
 		ComplexButton mainB3=new ComplexButton();
-		mainB3.setName("工具箱");
+		mainB3.setName("基金会");
 		mainB3.setSub_button(new Button[]{b33,b32,b31});
 		
 		Menu menu=new Menu();
-		menu.setButton(new Button[]{b11,b21,mainB3});
+		menu.setButton(new Button[]{mainB1,b21,mainB3});
 		
 		return menu;
 	}

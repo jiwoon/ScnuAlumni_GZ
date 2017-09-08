@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
 import com.newttl.scnualumni_gz.service.ChatService;
 import com.newttl.scnualumni_gz.service.MessageService;
 import com.newttl.scnualumni_gz.util.SignUtil;
@@ -28,7 +29,7 @@ public class WxServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		System.out.println("进入doPost");
+		ScnuAlumniLogs.getLogger().debug("进入doPost");
 		
 		// 将请求、响应的编码均设置为UTF-8（防止中文乱码
 		req.setCharacterEncoding("UTF-8");
@@ -74,7 +75,7 @@ public class WxServlet extends HttpServlet {
 			String respXml= MessageService.processRequest(req);
 			writer.write(respXml);
 			
-			System.out.println("公众号回复::"+"\n"+respXml);
+			ScnuAlumniLogs.getLogger().debug("公众号回复::"+"\n"+respXml);
 			
 		} catch (Exception e) {
 			
@@ -92,8 +93,7 @@ public class WxServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		System.out.println("开始校验");
+		ScnuAlumniLogs.getLogger().debug("开始校验");
 		
 		// 接收微信服务器发送请求时传递过来的4个参数 signature timestamp nonce echostr
 		String signature=req.getParameter("signature");//微信加密签名signature结合了开发者填写的token参数和请求中的timestamp参数、nonce参数
@@ -103,10 +103,8 @@ public class WxServlet extends HttpServlet {
 		
 		String signUp="";
 		signUp=req.getParameter("signUp");
-		System.out.println("signUp::"+signUp);
-		
-		System.out.println("echostr::"+echostr);
-		
+		ScnuAlumniLogs.getLogger().debug("signUp::"+signUp);
+		ScnuAlumniLogs.getLogger().debug("echostr::"+echostr);
 		
 		//排序 TOKEN timestamp nonce
 		String sortStr=SignUtil.sort(TOKEN, timestamp, nonce);
@@ -117,11 +115,11 @@ public class WxServlet extends HttpServlet {
 		//校验签名
 		PrintWriter writer =resp.getWriter();
 		if (mySignature != null && mySignature != "" && mySignature.equals(signature)) {
-          System.out.println("校验成功。");
+          ScnuAlumniLogs.getLogger().debug("校验成功!");
           //如果检验成功输出echostr，微信服务器接收到此输出，才会确认检验完成。
           writer.write(echostr);
 		} else {
-          System.out.println("校验失败。");
+          ScnuAlumniLogs.getLogger().debug("校验失败！！！");
 		}
 		
 		writer.close();

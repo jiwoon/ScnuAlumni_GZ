@@ -18,19 +18,19 @@ public class WeiXinCommon {
 	 * 魔法隧道  http://jqfrudd.hk1.mofasuidao.cn
 	 */
 	
-	public static final String WEIXIN_URL="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni/WxServlet";
-	public static final String REDIRECT_URI="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni/OAuthServlet";
+	public static final String WEIXIN_URL="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/WxServlet";
+	public static final String REDIRECT_URI="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/OAuthServlet";
 	public static final String OAUTH_URL="http://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 
 	/**
 	 * 活动中心网页授权
 	 */
-	public static final String activityUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni/OAuthServlet";
+	public static final String activityUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/OAuthServlet";
 	
 	/**
 	 * 查找校友
 	 */
-	public static final String SchoolMateUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni/findSchoolMate.jsp";
+	public static final String SchoolMateUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/findSchoolMate.jsp";
 	
 	/**
 	 * 公众号的  appID
@@ -69,7 +69,7 @@ public class WeiXinCommon {
 	/**
 	 * 个人中心网页授权
 	 */
-	public static final String signUpUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni/SignUpServlet";
+	public static final String signUpUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/SignUpServlet";
 	
 	/**
 	 * 服务器中图片根目录
