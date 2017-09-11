@@ -1,6 +1,7 @@
 package com.newttl.scnualumni_gz.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -169,7 +170,9 @@ public class MessageService {
 				//获取用户的经纬度
 				String lng=reqMap.get("Location_X").trim();
 				String lat=reqMap.get("Location_Y").trim();
-				System.out.println("Location_X::"+lng+"\n"+"Location_Y::"+lat);
+				
+				ScnuAlumniLogs.getLogger().debug("Location_X::"+lng+"--"+"Location_Y::"+lat);
+				
 				//转换成百度坐标系
 				String bd09Lng=null;
 				String bd09Lat=null;
@@ -177,7 +180,9 @@ public class MessageService {
 				if (userLocation != null) {
 					bd09Lng=userLocation.getBd09Lng();
 					bd09Lat=userLocation.getBd09Lat();
-					System.out.println("bd09Lng::"+bd09Lng+"\n"+"bd09Lat::"+bd09Lat);
+					
+					ScnuAlumniLogs.getLogger().debug("bd09Lng::"+bd09Lng+"--"+"bd09Lat::"+bd09Lat);
+					
 				}
 				//保存用户位置信息到数据库
 				DataBaseUtil baseUtil=new DataBaseUtil();
@@ -187,9 +192,9 @@ public class MessageService {
 				StringBuffer buffer = new StringBuffer();
 				buffer.append("[愉快]").append("成功接收您的位置！").append("\n\n");
 				buffer.append("您可以输入搜索关键词获取周边信息了，例如：").append("\n");
-				buffer.append("        附近ATM").append("\n");
-				buffer.append("        附近KTV").append("\n");
-				buffer.append("        附近厕所").append("\n");
+				buffer.append("附近ATM").append("\n");
+				buffer.append("附近KTV").append("\n");
+				buffer.append("附近厕所").append("\n");
 				buffer.append("必须以“附近”两个字开头！");
 				respContent = buffer.toString();
 				//设置文本消息内容
@@ -246,65 +251,40 @@ public class MessageService {
 					}
 					
 					// 新用户关注问候语
-					textMessage.setContent("终于等到你[玫瑰]大家都想你了[害羞]\n" + "\n【华师新闻】看母校最新动态\n\n"
-							+ "【公众号二维码】生成你的专属公众号二维码，轻松邀请校友\n\n" + "【工具箱】查找校友通讯录、校友最近活动\n\n" + "快点和昔日的同学联系吧！[拥抱]\n\n为了方便更多同学联系你，请先点击菜单栏【工具箱】->【个人中心】进行注册~[愉快]");
+					textMessage.setContent(getSubscribeMsg());
 					respXml=MessageUtil.messageToXml(textMessage);
 					break;
 					
 				case MessageUtil.EVENT_TYPE_UNSUBSCRIBE://取消关注
-					// TODO 取消订阅后用户不会再收到公众账号发送的消息，因此不需要回复
+					//回复"success",即不做处理
+					respXml="success";
 					break;
 					
 				case MessageUtil.EVENT_TYPE_SCAN://扫描带参数二维码
 					//TODO
 					break;
 					
-				case MessageUtil.EVENT_TYPE_LOCATION://上报地理位置
-					//回复文本消息给用户
-//					textMessage.setContent("您的位置已经更新！");
-//					respXml=MessageUtil.messageToXml(textMessage);
-					
+				case MessageUtil.EVENT_TYPE_LOCATION://上报地理位置					
+					//回复"success",即不做处理
 					respXml="success";
-					
-					/*
-					//保存用户位置信息到数据库
-					UserLocationEvent location=new UserLocationEvent();
-					String req_latitude=reqMap.get("Latitude");
-					String req_longitude=reqMap.get("Longitude");
-					String req_percision=reqMap.get("Precision");
-					//TODO 此处需要将经纬度转换为具体位置
-					String address="待转换";
-					location.setFromUserName(req_fromUserName);
-					location.setCreateTime(Long.valueOf(req_createTime));
-					location.setLatitude(req_latitude);
-					location.setLongitude(req_longitude);
-					location.setPrecision(req_percision);
-					location.setAddress(address);
-					//保存用户位置
-					int insertIndex=MessageUtil.insertLocationData(location);
-					System.out.println("保存用户位置信息-insertIndex::"+insertIndex);
-					*/
-					
-					
 					break;
 					
 				case MessageUtil.EVENT_TYPE_CLICK://点击菜单拉取消息
 					//自定义菜单中的EventKey属性(在创建菜单是自定义的)
 					String eventKey=reqMap.get("EventKey");
 					if ("qrcode".equals(eventKey)) {
-						//获取临时带参二维码
-						AdvancedUtil advancedUtil2=new AdvancedUtil();
-						Image qrCodeImg=new Image();
-						String s_id = advancedUtil2.getAdvancedMethod().getQRid(resp_toUserName,WeiXinCommon.appID,WeiXinCommon.appsecret);
-						qrCodeImg.setMediaId(s_id);
-						ImageMessage qrCodeMessage=new ImageMessage();
-						qrCodeMessage.setFromUserName(resp_fromUserName);
-						qrCodeMessage.setToUserName(resp_toUserName);
-						qrCodeMessage.setCreateTime(new Date().getTime());
-						qrCodeMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_IMAGE);
-						qrCodeMessage.setImage(qrCodeImg);
-						//将图片对象转换为XML数据
-						respXml=MessageUtil.messageToXml(qrCodeMessage);
+						//获取校友风采图文列表
+						List<Article> articles = getAlumniStyle();
+						//创建图文消息
+						NewsMessage newsMessage=new NewsMessage();
+						newsMessage.setFromUserName(resp_fromUserName);
+						newsMessage.setToUserName(resp_toUserName);
+						newsMessage.setCreateTime(new Date().getTime());
+						newsMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_NEWS);
+						newsMessage.setArticleCount(articles.size());
+						newsMessage.setArticles(articles);
+						//将图文消息对象转换为XML格式
+						respXml=MessageUtil.messageToXml(newsMessage);
 					}
 					break;
 					
@@ -314,15 +294,10 @@ public class MessageService {
 					break;
 				}
 				break;
-			}
-			
-//			//设置文本消息内容
-//			textMessage.setContent(respContent);
-//			//将文本消息对象转换为XML格式
-//			respXml=MessageUtil.messageToXml(textMessage);
-			
+			}			
 		} catch (Exception e) {
 			e.printStackTrace();
+			ScnuAlumniLogs.getLogger().error(e);
 		}
 		
 		return respXml;
@@ -334,9 +309,19 @@ public class MessageService {
 	 */
 	private static String getSubscribeMsg(){
 		StringBuffer buffer=new StringBuffer();
-		buffer.append("欢迎您的关注！/:rose/:rose/:rose");
-		buffer.append("\n\n");
-		buffer.append("回复“附近”开始体验搜索附近功能吧！");
+		buffer.append("终于等到你[玫瑰]大家都想你了[害羞]");
+		buffer.append("\n");
+		buffer.append("【菜单】功能");
+		buffer.append("\n");
+		buffer.append("【新闻】看母校新闻动态、官方微博");
+		buffer.append("\n");
+		buffer.append("【校友风采】查看校友的风采人生");
+		buffer.append("\n");
+		buffer.append("【基金会】查找校友互相联络[玫瑰]");
+		buffer.append("\n");
+		buffer.append("快点和昔日的同学联系吧！[拥抱]");
+		buffer.append("\n");
+		buffer.append("为了方便更多同学联系您，请先点击菜单栏【基金会】->【个人中心】进行注册~[愉快]");
 		return buffer.toString();
 	}
 	
@@ -352,5 +337,22 @@ public class MessageService {
 		buffer.append("2）指定关键词搜索").append("\n");
 		buffer.append("格式：附近+关键词\n例如：附近ATM、附近KTV、附近厕所等等");
 		return buffer.toString();
+	}
+	
+	/**
+	 * 校友风采 article 列表
+	 * @return
+	 */
+	private static List<Article> getAlumniStyle(){
+		List<Article> articles=new ArrayList<Article>();
+		String projBasePath=WeiXinCommon.projectUrl;
+		for (int i = 0; i < 8; i++) {
+			Article article=new Article();
+			article.setTitle("校友"+(i+1)+"的介绍");
+			article.setPicUrl(projBasePath + "images/poisearch.png");
+			article.setUrl(String.format(projBasePath+"alumniNews.jsp?alumni=%s", "校友"+String.valueOf(i+1)));
+			articles.add(article);
+		}
+		return articles;
 	}
 }

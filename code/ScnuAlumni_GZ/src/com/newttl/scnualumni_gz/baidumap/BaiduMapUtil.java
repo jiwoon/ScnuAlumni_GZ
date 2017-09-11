@@ -18,6 +18,7 @@ import org.dom4j.Element;
 import com.newttl.scnualumni_gz.baidumap.BaiduPoiPlace;
 import com.newttl.scnualumni_gz.bean.database.UserLocation;
 import com.newttl.scnualumni_gz.bean.response.Article;
+import com.newttl.scnualumni_gz.weixin.WeiXinCommon;
 
 import it.sauronsoftware.base64.Base64;
 import net.sf.json.JSONObject;
@@ -176,7 +177,7 @@ public class BaiduMapUtil {
 	 */
 	public static List<Article> makeArticleList(List<BaiduPoiPlace> placeList,String bd09Lng,String bd09Lat){
 		//项目的根路径
-		String projBasePath="http://newtkwx.ngrok.club/FirstProj/";
+		String projBasePath=WeiXinCommon.projectUrl;
 		List<Article> articleList=new ArrayList<Article>();
 		BaiduPoiPlace baiduPoiPlace=null;
 		for (int i=0;i< /*placeList.size()*/ 8;i++) {

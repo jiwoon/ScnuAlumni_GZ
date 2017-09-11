@@ -44,4 +44,12 @@
     <servlet-name>SendPosterServlet</servlet-name>
     <url-pattern>/SendPosterServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+  	<servlet-name>ManagerLoginServlet</servlet-name>
+  	<servlet-class>com.newttl.scnualumni_gz.servlet.ManagerLoginServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ManagerLoginServlet</servlet-name>
+    <url-pattern>/ManagerLoginServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

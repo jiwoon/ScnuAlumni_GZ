@@ -43,7 +43,7 @@ public class DataBaseUtil {
 		// URL指向要访问的数据库名wechat_data
         String url = "jdbc:mysql://127.0.0.1:3306/wechat_data";
         //用户名
-        String userName="root";
+        String userName="craddock";
         //密码
         String password="guochang";
 		//加载驱动
@@ -286,7 +286,7 @@ public class DataBaseUtil {
 	 */
 	public UserLocation getLastLoaction(String openId){
 		UserLocation userLocation=null;
-		String sqlStr = "select top 1 * from user_location where open_id=? order by id desc";
+		String sqlStr = "select * from user_location where open_id=? order by id desc limit 1";
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		try {

@@ -8,7 +8,13 @@ package com.newttl.scnualumni_gz.weixin;
  * @date 2017年7月4日 上午8:54:01
  */
 public class WeiXinCommon {
-
+	
+	/**
+	 * 根目录
+	 */
+	public static final String projectUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/";
+	
+	
 	/***
 	 * URL 
 	 *

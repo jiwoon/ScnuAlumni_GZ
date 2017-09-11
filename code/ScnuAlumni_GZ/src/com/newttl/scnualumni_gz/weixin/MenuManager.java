@@ -40,9 +40,14 @@ public class MenuManager {
 		b12.setUrl("http://weibo.com/u/5338220864?from=feed&loc=nickname");
 		
 		ClickButton b21=new ClickButton();
-		b21.setName("校友风采");
+		b21.setName("最新风采");
 		b21.setType("click");
 		b21.setKey("qrcode");
+		
+		ViewButton b22=new ViewButton();
+		b22.setName("往期精彩");
+		b22.setType("view");
+		b22.setUrl("http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/alumniNews.jsp?alumni=往期精彩");
 		
 		ViewButton b31=new ViewButton();
 		String url0=WeiXinCommon.OAUTH_URL;
@@ -51,18 +56,7 @@ public class MenuManager {
 		url0=url0.replace("REDIRECT_URI", url1);
 		b31.setName("个人中心");
 		b31.setType("view");
-		b31.setUrl(url0);
-		ScnuAlumniLogs.getLogger().debug("[个人中心]--url::"+"\n"+url0);
-		
-		ViewButton b32=new ViewButton();
-		String ur32=WeiXinCommon.OAUTH_URL;
-		String ur33=CommonUtil.urlEncodingUTF8(WeiXinCommon.activityUrl);
-		ur32=ur32.replace("APPID",WeiXinCommon.appID);
-		ur32=ur32.replace("REDIRECT_URI", ur33);
-		b32.setName("活动中心");
-		b32.setType("view");
-		b32.setUrl(ur32);
-		ScnuAlumniLogs.getLogger().debug("[活动中心]--url::"+"\n"+ur32);
+		b31.setUrl(url0);		
 		
 		ViewButton b33 = new ViewButton();
 		b33.setName("查找校友");
@@ -73,12 +67,16 @@ public class MenuManager {
 		mainB1.setName("新闻");
 		mainB1.setSub_button(new Button[]{b11,b12});
 		
+		ComplexButton mainB2=new ComplexButton();
+		mainB2.setName("校友风采");
+		mainB2.setSub_button(new Button[]{b21,b22});
+		
 		ComplexButton mainB3=new ComplexButton();
 		mainB3.setName("基金会");
-		mainB3.setSub_button(new Button[]{b33,b32,b31});
+		mainB3.setSub_button(new Button[]{b33,b31});
 		
 		Menu menu=new Menu();
-		menu.setButton(new Button[]{mainB1,b21,mainB3});
+		menu.setButton(new Button[]{mainB1,mainB2,mainB3});
 		
 		return menu;
 	}

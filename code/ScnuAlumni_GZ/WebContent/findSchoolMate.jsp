@@ -64,7 +64,7 @@ function onSearch() {
 		$.ajax({
 			type:"POST",
 			contentType: "application/x-www-form-urlencoded; charset=utf-8",
-			url:"/ScnuAlumni/SignUpServlet",
+			url:"/ScnuAlumni_GZ/SignUpServlet",
 			data:JSON.stringify(jsonStr),
 			dataType:"json",
 			success:function(data){

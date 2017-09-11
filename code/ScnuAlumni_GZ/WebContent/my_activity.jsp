@@ -31,7 +31,7 @@
 		$.ajax({
 			type:"POST",
 			contentType: "application/x-www-form-urlencoded; charset=utf-8",
-			url:"/ScnuAlumni/SendPosterServlet",
+			url:"/ScnuAlumni_GZ/SendPosterServlet",
 			data:JSON.stringify(posterData),
 			dataType:"json",
 			success:function(data){

@@ -1009,9 +1009,6 @@ public class AdvancedUtil {
 			WeiXinMedia weixinMedia = uploadMedia(accessToken, "image", WeiXinCommon.QrFileUrl);
 			return weixinMedia.getMediaId();
 		}
-
-
-
 		
 	}
 	
