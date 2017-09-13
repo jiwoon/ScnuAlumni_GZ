@@ -47,7 +47,7 @@ public class MenuManager {
 		ViewButton b22=new ViewButton();
 		b22.setName("往期精彩");
 		b22.setType("view");
-		b22.setUrl("http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/alumniNews.jsp?alumni=往期精彩");
+		b22.setUrl("http://1slmm2s.hk1.mofasuidao.cn/html/guard/guard.html");
 		
 		ViewButton b31=new ViewButton();
 		String url0=WeiXinCommon.OAUTH_URL;

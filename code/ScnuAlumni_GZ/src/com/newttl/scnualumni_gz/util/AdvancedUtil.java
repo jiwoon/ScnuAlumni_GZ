@@ -27,6 +27,7 @@ import com.newttl.scnualumni_gz.bean.pojo.WeiXinUserList;
 import com.newttl.scnualumni_gz.bean.response.Article;
 import com.newttl.scnualumni_gz.bean.response.Music;
 import com.newttl.scnualumni_gz.interfaces.AdvancedInterface;
+import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
 import com.newttl.scnualumni_gz.util.CommonUtil;
 import com.newttl.scnualumni_gz.weixin.WeiXinCommon;
 
@@ -845,6 +846,185 @@ public class AdvancedUtil {
 		}
 		
 		/**
+		 * 上传图文消息素材
+		 * @param articlesJson 图文消息json数据
+		 * @param accessToken 接口凭证
+		 * @return 返回 JSONObject 对象
+		 */
+		@Override
+		public JSONObject uploadNewsArticles(String articlesJson,String accessToken){
+			JSONObject respJson=null;
+			//请求地址
+			String requestUrl="https://api.weixin.qq.com/cgi-bin/media/uploadnews?access_token=ACCESS_TOKEN";
+			requestUrl=requestUrl.replace("ACCESS_TOKEN", accessToken);
+			try {
+				//发起请求
+				JSONObject jsonObject=CommonUtil.httpsRequest(requestUrl, "POST", articlesJson);
+				respJson=jsonObject;
+				ScnuAlumniLogs.getLogger().debug(respJson.toString());
+			} catch (Exception e) {
+				respJson=null;
+				ScnuAlumniLogs.getLogger().error(e);
+			}
+			return respJson;
+		}
+		
+		/**
+		 * 根据标签tag_id来群发消息
+		 * @param massJson 群发消息的json数据
+		 * @param accessToken 接口凭证
+		 * @return 返回 JSONObject 对象
+		 */ 
+		@Override
+		public JSONObject massByTag(String massJson,String accessToken){
+			JSONObject respJson=null;
+			//请求地址
+			String requestUrl="https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=ACCESS_TOKEN";
+			requestUrl=requestUrl.replace("ACCESS_TOKEN", accessToken);
+			try {
+				//发起请求
+				JSONObject jsonObject=CommonUtil.httpsRequest(requestUrl, "POST", massJson);
+				respJson=jsonObject;
+				ScnuAlumniLogs.getLogger().debug(respJson.toString());
+			} catch (Exception e) {
+				respJson=null;
+				ScnuAlumniLogs.getLogger().error(e);
+			}
+			return respJson;
+		}
+		
+		/**
+		 * 根据openid列表来群发消息
+		 * @param massJson 群发消息的json数据
+		 * @param accessToken 接口凭证
+		 * @return 返回 JSONObject 对象
+		 */
+		@Override
+		public JSONObject massByOpenIdList(String massJson,String accessToken){
+			JSONObject respJson=null;
+			//请求地址
+			String requestUrl="https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=ACCESS_TOKEN";
+			requestUrl=requestUrl.replace("ACCESS_TOKEN", accessToken);
+			try {
+				//发起请求
+				JSONObject jsonObject=CommonUtil.httpsRequest(requestUrl, "POST", massJson);
+				respJson=jsonObject;
+				ScnuAlumniLogs.getLogger().debug(respJson.toString());
+			} catch (Exception e) {
+				respJson=null;
+				ScnuAlumniLogs.getLogger().error(e);
+			}
+			return respJson;
+		}
+		
+		/**
+		 * 指定用户预览群发消息
+		 * @param previewJson 预览接口的post数据
+		 * @param accessToken 接口凭证
+		 * @return 返回JSONObject对象 
+		 */
+		@Override
+		public JSONObject massOpenIdpreview(String previewJson,String accessToken){
+			JSONObject respJson=null;
+			//请求地址
+			String requestUrl="https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=ACCESS_TOKEN";
+			requestUrl=requestUrl.replace("ACCESS_TOKEN", accessToken);
+			try {
+				//发起请求
+				JSONObject jsonObject=CommonUtil.httpsRequest(requestUrl, "POST", previewJson);
+				respJson=jsonObject;
+				ScnuAlumniLogs.getLogger().debug(respJson.toString());
+			} catch (Exception e) {
+				respJson=null;
+				ScnuAlumniLogs.getLogger().error(e);
+			}
+			return respJson;
+		}
+		
+		/**
+		 * 上传群发接口图文消息中的图片
+		 * @param accessToken 接口凭证
+		 * @param mediaFileUrl 图片的原始路径(图片为jpg/png格式)
+		 * @return 返回 JSONObject 对象
+		 */
+		@Override
+		public JSONObject uploadNewsImage(String accessToken,String mediaFileUrl) {
+			JSONObject respJson=null;
+			// 拼装请求地址
+			String uploadMediaUrl = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN";
+			uploadMediaUrl = uploadMediaUrl.replace("ACCESS_TOKEN", accessToken);
+
+			// 定义数据分隔符
+			String boundary = "------------7da2e536604c8";
+			try {
+				URL uploadUrl = new URL(uploadMediaUrl);
+				HttpURLConnection uploadConn = (HttpURLConnection) uploadUrl.openConnection();
+				uploadConn.setDoOutput(true);
+				uploadConn.setDoInput(true);
+				uploadConn.setRequestMethod("POST");
+				// 设置请求头Content-Type
+				uploadConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+				// 获取媒体文件上传的输出流（往微信服务器写数据）
+				OutputStream outputStream = uploadConn.getOutputStream();
+
+				URL mediaUrl = new URL(mediaFileUrl);
+				HttpURLConnection meidaConn = (HttpURLConnection) mediaUrl.openConnection();
+				meidaConn.setDoOutput(true);
+				meidaConn.setRequestMethod("GET");
+
+				// 从请求头中获取内容类型
+				String contentType = meidaConn.getHeaderField("Content-Type");
+				// 根据内容类型判断文件扩展名
+				String fileExt = CommonUtil.getFileExt(contentType);
+				// 请求体开始
+				outputStream.write(("--" + boundary + "\r\n").getBytes());
+				outputStream.write(
+						String.format("Content-Disposition: form-data; name=\"media\"; filename=\"file1%s\"\r\n", fileExt)
+								.getBytes());
+				outputStream.write(String.format("Content-Type: %s\r\n\r\n", contentType).getBytes());
+
+				// 获取媒体文件的输入流（读取文件）
+				BufferedInputStream bis = new BufferedInputStream(meidaConn.getInputStream());
+				byte[] buf = new byte[8096];
+				int size = 0;
+				while ((size = bis.read(buf)) != -1) {
+					// 将媒体文件写到输出流（往微信服务器写数据）
+					outputStream.write(buf, 0, size);
+				}
+				// 请求体结束
+				outputStream.write(("\r\n--" + boundary + "--\r\n").getBytes());
+				outputStream.close();
+				bis.close();
+				meidaConn.disconnect();
+
+				// 获取媒体文件上传的输入流（从微信服务器读数据）
+				InputStream inputStream = uploadConn.getInputStream();
+				InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+				StringBuffer buffer = new StringBuffer();
+				String str = null;
+				while ((str = bufferedReader.readLine()) != null) {
+					buffer.append(str);
+				}
+				bufferedReader.close();
+				inputStreamReader.close();
+				// 释放资源
+				inputStream.close();
+				inputStream = null;
+				uploadConn.disconnect();
+
+				// 使用JSON-lib解析返回结果
+				JSONObject jsonObject = JSONObject.fromObject(buffer.toString());
+				respJson=jsonObject;
+				ScnuAlumniLogs.getLogger().debug(respJson.toString());
+			} catch (Exception e) {
+				respJson = null;
+				ScnuAlumniLogs.getLogger().error(e);
+			}
+			return respJson;
+		}
+		
+		/**
 		 * 上传媒体文件
 		 * 
 		 * @param accessToken
@@ -1008,6 +1188,31 @@ public class AdvancedUtil {
 			 */
 			WeiXinMedia weixinMedia = uploadMedia(accessToken, "image", WeiXinCommon.QrFileUrl);
 			return weixinMedia.getMediaId();
+		}
+		
+		/**
+		 * 对api调用次数清零
+		 * @param accessToken 接口凭证
+		 * @param appId 公众号appid
+		 * @return
+		 */
+		public JSONObject clearQuota(String accessToken,String appId){
+			JSONObject respJson=null;
+			String requestUrl="https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN";
+			requestUrl=requestUrl.replace("ACCESS_TOKEN", accessToken);
+			try {
+				// 需要提交的json数据 
+				String jsonData = "{\"appid\":\"%s\"}";
+				jsonData=String.format(jsonData, appId);
+				//发起请求
+				JSONObject jsonObject=CommonUtil.httpsRequest(requestUrl, "POST", jsonData);
+				respJson=jsonObject;
+				ScnuAlumniLogs.getLogger().debug(respJson.toString());
+			} catch (Exception e) {
+				respJson=null;
+				ScnuAlumniLogs.getLogger().error(e);
+			}
+			return respJson;
 		}
 		
 	}

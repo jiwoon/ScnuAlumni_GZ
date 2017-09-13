@@ -249,6 +249,46 @@ public interface AdvancedInterface {
 	boolean moveMemberGroup(String accessToken,String openId,int groupId);
 	
 	/**
+	 * 上传图文消息素材
+	 * @param articlesJson 图文消息json数据
+	 * @param accessToken 接口凭证
+	 * @return 返回 JSONObject 对象
+	 */
+	JSONObject uploadNewsArticles(String articlesJson,String accessToken);
+	
+	/**
+	 * 上传群发接口图文消息中的图片
+	 * @param accessToken 接口凭证
+	 * @param mediaFileUrl 图片的原始路径(图片为jpg/png格式)
+	 * @return 图文消息中图片的url
+	 */
+	JSONObject uploadNewsImage(String accessToken,String mediaFileUrl);
+	
+	/**
+	 * 根据标签tag_id来群发消息
+	 * @param massJson 群发消息的json数据
+	 * @param accessToken 接口凭证
+	 * @return 返回 JSONObject 对象
+	 */
+	JSONObject massByTag(String massJson,String accessToken);
+	
+	/**
+	 * 根据openid列表来群发消息
+	 * @param massJson 群发消息的json数据
+	 * @param accessToken 接口凭证
+	 * @return 返回 JSONObject 对象
+	 */ 
+	JSONObject massByOpenIdList(String massJson,String accessToken);
+	
+	/**
+	 * 指定用户预览群发消息
+	 * @param previewJson 预览接口的post数据
+	 * @param accessToken 接口凭证
+	 * @return 返回JSONObject对象 
+	 */
+	JSONObject massOpenIdpreview(String previewJson,String accessToken);
+	
+	/**
 	 * 上传媒体文件到微信服务器
 	 * 
 	 * @param accessToken 接口凭证
@@ -283,4 +323,11 @@ public interface AdvancedInterface {
 	 */
 	String downLoadMedia(String accessToken, String mediaId, String savePath);
 	
+	/**
+	 * 对api调用次数清零
+	 * @param accessToken 接口凭证
+	 * @param appId 公众号appid
+	 * @return
+	 */
+	JSONObject clearQuota(String accessToken,String appId);
 }

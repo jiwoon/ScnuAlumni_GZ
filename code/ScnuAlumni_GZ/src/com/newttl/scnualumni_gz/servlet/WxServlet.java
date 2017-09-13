@@ -17,6 +17,10 @@ import com.newttl.scnualumni_gz.util.SignUtil;
 public class WxServlet extends HttpServlet {
 
 	/**
+	 * add generated serial Version ID
+	 */
+	private static final long serialVersionUID = 8981427033154235405L;
+	/**
 	 * Token可由开发者可以任意填写，用作生成签名（该Token会和接口URL中包含的Token进行比对，从而验证安全性）
 	 * 比如这里我将Token设置为lgc1
 	 */

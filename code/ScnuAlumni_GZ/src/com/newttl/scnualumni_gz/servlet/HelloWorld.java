@@ -1,27 +1,20 @@
 package com.newttl.scnualumni_gz.servlet;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 
 import com.newttl.scnualumni_gz.bean.pojo.Token;
 import com.newttl.scnualumni_gz.bean.pojo.WeiXinGroups;
 import com.newttl.scnualumni_gz.bean.pojo.WeiXinMedia;
-import com.newttl.scnualumni_gz.bean.pojo.WeiXinPermanentQRCode;
-import com.newttl.scnualumni_gz.bean.pojo.WeiXinTemporaryQRCode;
-import com.newttl.scnualumni_gz.bean.pojo.WeiXinUserInfo;
-import com.newttl.scnualumni_gz.bean.pojo.WeiXinUserList;
-import com.newttl.scnualumni_gz.service.ChatService;
+import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
 import com.newttl.scnualumni_gz.util.AdvancedUtil;
 import com.newttl.scnualumni_gz.util.CommonUtil;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class HelloWorld {
@@ -43,167 +36,106 @@ public class HelloWorld {
 		String access_token=token.getAccess_token();
 		System.out.println("access_token::"+access_token);
 		
-//		String classPath=ChatService.getIndexDir();
-//		System.out.println("classPath::"+"\n"+classPath);
-		
-		/*
-		getWeixinUserInfo(access_token,user_openId);
-		
-		getWexinUserLists(access_token, "");
-		
-		getWeixinGroups(access_token);
-		
-//		createGroup(access_token, "newthk1");
-		
-		updateGroup(access_token, 100, "family");
-		
-		moveMember(access_token, my_openId, 100);
-		
-		getWeixinGroups(access_token);*/
-		
-		// http://2d625a40.ngrok.io/WeiXinMedia/voice/msg1.amr
-//		uploadMedia(access_token, "voice", "http://03b9ab9a.ngrok.io/WeiXinMedia/voice/uploadtest.jpg");
-		
-//		WeiXinMedia media=AdvancedUtil.uploadTemporaryMedia(access_token, "voice", "http://2d625a40.ngrok.io/WeiXinMedia/voice/begin.mp3");
-//		System.out.println(media.getWeixinMedia());
-		
-//		String downLoadfile=AdvancedUtil.downLoadMedia(access_token, mediaId, savePath);
-//		String path="D:/soft/Tomcat/tomcat8044/apache-tomcat-8.0.44/webapps/ROOT/WeiXinMedia/usersMedia/voice/test.mp3";
-//		String path="D:/MaLady.mp3";
+		//上传图文消息的图片
+		String newsImageUrl="http://jqfrudd.hk1.mofasuidao.cn/image/InviteModel2.jpg";
+		AdvancedUtil advancedUtil=new AdvancedUtil();
+		//清零api调用次数
+//		advancedUtil.getAdvancedMethod().clearQuota(access_token, appID);
 		
 		
-//		String path="http://a7ef5a73.ngrok.io/WeiXinMedia/usersMedia/voice/MaLady.mp3";
+//		WeiXinGroups group=advancedUtil.getAdvancedMethod().createGroup(access_token, "test912");
+//		advancedUtil.getAdvancedMethod().moveMemberGroup(access_token, "oA1Hcv9PfGShFQfsHXEdjQrPGPmQ", group.getId());
+//		advancedUtil.getAdvancedMethod().moveMemberGroup(access_token, "oA1HcvwuqMAZgdi6l8hdKV48OCJE", group.getId());
+//		String url=advancedUtil.getAdvancedMethod().uploadNewsImage(access_token, newsImageUrl).toString();
 		
-		
-//		String path="http://a7ef5a73.ngrok.io/WeiXinMedia/qrcodes/debug.jpg";
-		
-		
-//		AdvancedUtil advancedUtil=new AdvancedUtil();
-		
-		
-//		String hello=advancedUtil.getAdvancedMethod().getHello();
-//		System.out.println(hello);
-		
-//		WeiXinMedia media=advancedUtil.getAdvancedMethod().uploadMedia(access_token, "voice", path);
-//		System.out.println(media.getWeixinMedia());
-		
-		
-//		
-//		File file=new File(path);
-//		
-//		String jsonObject=null;
-//		try {
-//			jsonObject=advancedUtil.getAdvancedMethod().upload(path, access_token, "voice");
-//		}catch (Exception e) {
-////			e.printStackTrace();
-//			System.out.println(e.toString());
-//		}
-//		
-//		System.out.println(jsonObject.toString());
-//		
-		
-		
-		//驱动
-		String driver="com.mysql.jdbc.Driver";
-		// URL指向要访问的数据库名wechat_data
-        String url = "jdbc:mysql://127.0.0.1:3306/wechat_data";
-        //用户名
-        String userName="root";
-        //密码
-        String password="guochang";
-		//加载驱动
-        try {
-			Class.forName(driver);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-        //链接数据库
-        try {
-			Connection conn=DriverManager.getConnection(url, userName, password);
-			 if(!conn.isClosed()){
-	             System.out.println("Succeeded connecting to the Database!");
-			 }
-			 String sqlStr="select joke_content from joke";
-			 PreparedStatement ps=conn.prepareStatement(sqlStr);
-			 ResultSet rs=ps.executeQuery();
-			 while (rs.next()) {
-				System.out.println(rs.getString("joke_content"));
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-        
-	}
-	/*
-	//创建二维码
-	private static void getQRcode(String access_token){
-
-		System.out.println("access_token::"+access_token);
-		//创建永久带参数二维码
-		WeiXinPermanentQRCode weCode=AdvancedUtil.createPermanentQRCode(access_token, "1520");
-		String ticket=weCode.getTicket();
-//		int expire=weCode.getExpireSeconds();
-		String url=weCode.getUrl();
-//		System.out.println("ticket::"+ticket+"\n"+"expire::"+expire+"\n"+"url::"+url);
-		System.out.println("ticket::"+ticket+"\n"+"url::"+url);
-		
-		//根据 ticket 获取二维码
-		String savePath="D:/WebProj/myDownload";
-		String filePath=AdvancedUtil.getQRCode(ticket, savePath);
-		
-		System.out.println("二维码路径：："+filePath);
-		
-	}
-	
-	//获取指定openId的用户的基本信息
-	private static void getWeixinUserInfo(String access_token,String openId){
-		WeiXinUserInfo userInfo=AdvancedUtil.getUserInfo(access_token, openId);
-		byte[] bytes=userInfo.getWeixinUserInfo().getBytes();
+		//上传图文消息缩略图，获取其media_id
+		WeiXinMedia media=advancedUtil.getAdvancedMethod()
+							.uploadMedia(access_token, "image", "http://jqfrudd.hk1.mofasuidao.cn/image/haha.jpg");
+		String mediaId=media.getMediaId();
+//		http://mmbiz.qpic.cn/mmbiz_jpg/jGw8UaGJmVR0RYB6BcpIWS07UhVJck03SFBNaNaaicwCbrueMHm5kjRXTiaH3kjrAUCA7pqyJX0xolA710apljvA/0
+//		JSONObject  newsImageJson=advancedUtil.getAdvancedMethod().uploadNewsImage(access_token, "http://jqfrudd.hk1.mofasuidao.cn/image/henhen.jpg");
+//		String newsImgUrl=newsImageJson.getString("url");
+		String newsImgUrl="http://mmbiz.qpic.cn/mmbiz_jpg/jGw8UaGJmVR0RYB6BcpIWS07UhVJck03SFBNaNaaicwCbrueMHm5kjRXTiaH3kjrAUCA7pqyJX0xolA710apljvA/0";
 		try {
-			System.out.println(new String(bytes, "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
+			//上传图文消息
+			
+			String contentHtml="<P>图文消息页面的内容，支持HTML标签。具备微信支付权限的公众号，可以使用a标签，其他公众号不能使用，如需插入小程序卡片，可参考下文"
+					+ "<br>上面可能没描述清楚问题，下面是详细的信息。谢谢你的解答哦。"
+					+ "功能需求：我们公司需要用微信主动推送消息给特定用户。"
+					+ "已实现功能：因为微信没有开放主动发送消息的接口，只好通过模拟登陆来实现了。现在已经能主动推送文本消息给指定的微信粉丝了。"
+					+ "需要实现的功能：现在领导希望能主动推送带链接的图文消息给指定的用户。"
+					+ "问题点：<br>1.我看官方API上对图片的链接有限制，“限制图片链接的域名需要与开发者填写的基本资料中的Url一致 ”。意味着我必须成为开发者才能推送图文消息吗？"
+					+ "<br>2.模拟主动推送消息+调用推送图文的API接口能实现主动推送图文消息给指定粉丝吗？"
+					+ "<br><img src='"+newsImgUrl+"'> </p>";
+//			String content_source_url="http://mp.weixin.qq.com/s?__biz=MzIxODg4NjkxNQ==&tempkey=OTIyX2xYbTFVeGk0cTNPdy95dkZHNF9wcnA0bUR6ZnY5UWZzT3BGWlpFMkhqLWVxdmhzWlc2VWF2aWI2MTcyV1l0aGJMUDNzaWlJRjVLQlQwUkoyd3JCc1hpVDRYUjlfdnBXZjRxd1FVTk11c2FQbXFsZUtqMDJTT28wXzBZVWQ0cVRuR0pkLS1zS3hYcVZhSTNodnFEczFCdE1EZktaLTRGdEwxTlZrNmd%2Bfg%3D%3D&chksm=97e2e74ca0956e5a1b38f27a310f53fad4cb18313ebdd8947d84d1361b9e7a230b3d277d3082&scene=0&previewkey=zSfEVOtY0mfUeswVTgbjQMNS9bJajjJKzz%252F0By7ITJA%253D#wechat_redirect";
+			String content_source_url="http://1slmm2s.hk1.mofasuidao.cn/html/first/first.html";
+			String author=new String("craddock".getBytes("UTF-8"));
+			String title=new String("测试推文".getBytes("UTF-8"));
+			String content=new String(contentHtml.getBytes("UTF-8"));
+			String digest=new String("测试推文描述".getBytes("UTF-8"));
+			String msg = "{\"articles\": [{\"thumb_media_id\":\"" + mediaId + "\", \"author\":\"" + author + "\",\"title\":\""
+					+ title + "\",\"content_source_url\":\"" + content_source_url + "\", \"content\":\"" + content
+					+ "\",\"digest\":\"" + digest + "\"}]}";
+			JSONObject respJson=advancedUtil.getAdvancedMethod().uploadNewsArticles(msg, access_token);
+			//获取图文消息的mediaId
+			String msgMediaId=respJson.getString("media_id");
+			
+			// 单独发给该用户进行预览
+			String sendPreUrl = "https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=" + access_token;
+			String sendPreMsg = "{\"touser\":\"" + my_openId + "\",\"mpnews\":{\"media_id\":\"" + msgMediaId
+					+ "\"},\"msgtype\":\"mpnews\"}";
+			advancedUtil.getAdvancedMethod().massOpenIdpreview(sendPreMsg, access_token);
+			
+			
+			/*
+			//群发
+			String sendAllMsg = "{\"filter\":{\"is_to_all\":true},\"mpnews\":{ \"media_id\":\"" + msgMediaId
+					+ "\"}, \"msgtype\":\"mpnews\"}";
+			advancedUtil.getAdvancedMethod().massByTag(sendAllMsg, access_token);
+			*/
+			
+		/*
+		// 需要提交的json数据 
+		JSONObject jsonObject=new JSONObject();
+		JSONArray jsonArray=new JSONArray();
+		JSONObject object=new JSONObject();
+		object.put("thumb_media_id", mediaId);
+		object.put("author", "craddock");
+		object.put("title", "测试推文111");
+		object.put("content_source_url", "http://d.g.wanfangdata.com.cn/Periodical_qbxb201501002.aspx");
+		object.put("content", "内容111");
+		object.put("digest", "描述111");
+		object.put("show_cover_pic", 0);
+		jsonArray.add(object);
+		jsonObject.put("articles", jsonArray);
+		String jsonData =JSONObject.fromObject(jsonObject).toString();
+		
+		//上传图文素材
+		JSONObject respJson=advancedUtil.getAdvancedMethod().uploadNewsArticles(jsonData, access_token);
+		*/
+		/*	
+		//组装群发消息
+		JSONObject mass=new JSONObject();
+		JSONArray touserArray=new JSONArray();
+		touserArray.add("oA1Hcv9PfGShFQfsHXEdjQrPGPmQ");
+		touserArray.add("oA1HcvwuqMAZgdi6l8hdKV48OCJE");
+		JSONObject mpnewsObj=new JSONObject();
+		mpnewsObj.put("media_id", respJson.getString("media_id"));
+		mass.put("touser", touserArray);
+		mass.put("mpnews", mpnewsObj);
+		mass.put("msgtype", "mpnews");
+		mass.put("send_ignore_reprint", 0);
+		String massJson=String.valueOf(mass);
+		//群发图文消息
+		JSONObject massResp=advancedUtil.getAdvancedMethod().massByOpenIdList(massJson, access_token);
+		ScnuAlumniLogs.getLogger().error(massJson);
+		*/
+		
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		System.out.println(userInfo.getWeixinUserInfo());
+		
 	}
 	
-	//拉取关注者列表
-	private static void getWexinUserLists(String access_token,String nextOpenId){
-		WeiXinUserList userList=AdvancedUtil.getWeiXinUserList(access_token, nextOpenId);
-		System.out.println(userList.getWeiXinUserList());
-	}
-	
-	//获取用户分组信息
-	private static void getWeixinGroups(String access_token){
-		List<WeiXinGroups> groups=AdvancedUtil.getWeiXinGroups(access_token);
-		for (WeiXinGroups weiXinGroups : groups) {
-			System.out.println(weiXinGroups.getWeiXinGroups());
-		}
-	}
-	
-	//创建分组
-	private static void createGroup(String access_token,String groupName){
-		WeiXinGroups groups=AdvancedUtil.createGroup(access_token, groupName);
-		System.out.println(groups.getWeiXinGroups());
-	}
-	
-	//修改分组
-	private static void updateGroup(String access_token,int groupId,String groupName){
-		boolean result=AdvancedUtil.updateGroup(access_token, groupId, groupName);
-		System.out.println("修改分组：："+result);
-	}
-	
-	//移动用户到指定分组
-	private static void moveMember(String access_token,String openId,int groupId){
-		boolean result=AdvancedUtil.moveMemberGroup(access_token, openId, groupId);
-	}
-	
-	//上传媒体文件到微信服务器
-	private static void uploadMedia(String accessToken, String type, String mediaFileUrl){
-		WeiXinMedia media=AdvancedUtil.uploadTemporaryMedia(accessToken, type, mediaFileUrl);
-		System.out.println(media.getWeixinMedia());
-	}*/
 }

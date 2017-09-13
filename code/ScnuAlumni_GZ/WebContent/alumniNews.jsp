@@ -8,20 +8,17 @@
 <title>校友风采</title>
 </head>
 
-<script>
-	function click() {
-		<%
-		MenuManager.main(null);
-		%>
-	}
-</script>
-
 <body>
 <%
 	String alumni=(String)request.getParameter("alumni");
 %>
+<p>
+功能：
+1、校友注册登记
+2、查看校友通讯录
+3、公众号二维码推荐邀请校友
+4、发起校友活动
+</p>
 <p><%=alumni %></p>
-
-<button onclick="click()"></button>
 </body>
 </html>
