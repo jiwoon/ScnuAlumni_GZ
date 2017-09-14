@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -37,7 +38,7 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
  * @date 2017年6月7日 下午2:37:06
  */
 public class MessageUtil {
-
+	private static Logger logger=ScnuAlumniLogs.getLogger();
 	// 请求消息类型：文本
 	public static final String REQ_MESSAGE_TYPE_TEXT="text";
 	// 请求消息类型：图片
@@ -86,29 +87,34 @@ public class MessageUtil {
 	 * 解析用户发来的消息(XML)
 	 * @throws IOException 
 	 */
-	public static Map<String, String> parseXml(HttpServletRequest request) throws Exception{
+	public static Map<String, String> parseXml(HttpServletRequest request){
+		logger.debug("====解析用户发来的消息(XML)====");
 		//新建HashMap对象，存放解析的内容
 		Map<String, String> msgMap=new HashMap<String,String>();
-		//从HttpServletRequest中取输入流
-		InputStream iStream=request.getInputStream();
-		//读取输入流
-		SAXReader reader=new SAXReader();
-		Document document=reader.read(iStream);
-		//解析xml根节点
-		Element root=document.getRootElement();
-		//解析根节点的所有子节点
-		List<Element> elements=root.elements();
-		//遍历子节点，存放到HashMap中
-		ScnuAlumniLogs.getLogger().debug("用户发出请求::");
-		for (Element element : elements) {
-			msgMap.put(element.getName(), element.getText());
-			//控制台显示日志
-			ScnuAlumniLogs.getLogger().debug(element.getName()+"=>"+element.getText());
+		try {
+			//从HttpServletRequest中取输入流
+			InputStream iStream= request.getInputStream();
+			//读取输入流
+			SAXReader reader=new SAXReader();
+			Document document=reader.read(iStream);
+			//解析xml根节点
+			Element root=document.getRootElement();
+			//解析根节点的所有子节点
+			List<Element> elements=root.elements();
+			//遍历子节点，存放到HashMap中
+			logger.debug("====用户发出请求====");
+			for (Element element : elements) {
+				msgMap.put(element.getName(), element.getText());
+				//控制台显示日志
+				logger.debug(element.getName()+"=>"+element.getText());
+			}
+			//释放资源
+			iStream.close();
+			iStream=null;
+		} catch (Exception e) {
+			logger.error("====解析用户发来的消息(XML)【失败】====");
+			logger.error(e.toString());
 		}
-		//释放资源
-		iStream.close();
-		iStream=null;
-		
 		return msgMap;
 	}
 

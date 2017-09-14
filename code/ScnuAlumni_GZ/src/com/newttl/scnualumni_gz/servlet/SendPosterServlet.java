@@ -11,8 +11,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.newttl.scnualumni_gz.bean.database.Activity;
 import com.newttl.scnualumni_gz.bean.pojo.Token;
+import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
 import com.newttl.scnualumni_gz.util.AdvancedUtil;
 import com.newttl.scnualumni_gz.util.CommonUtil;
 import com.newttl.scnualumni_gz.util.DataBaseUtil;
@@ -32,9 +35,11 @@ public class SendPosterServlet extends HttpServlet {
 	 * add generated serial Version ID
 	 */
 	private static final long serialVersionUID = -9127882689605122756L;
+	private static Logger logger=ScnuAlumniLogs.getLogger();
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		logger.debug("====生成活动海报，并发送给用户====");
 		resp.setCharacterEncoding("UTF-8");
 		try {
 			InputStream inputStream=req.getInputStream();
@@ -63,7 +68,8 @@ public class SendPosterServlet extends HttpServlet {
 			out.write(String.valueOf(respJson));
 			out.flush();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("====生成活动海报，并发送给用户【失败】====");
+			logger.error(e.toString());
 		}
 	}
 	
@@ -73,6 +79,7 @@ public class SendPosterServlet extends HttpServlet {
 	 * @param activityID 活动id
 	 */
 	private void sendImgPoster(String openID,int activityID){
+		logger.debug("====通过客服消息发生送活动图片给用户====");
 		try {
 			Activity activity = new Activity();
 			DataBaseUtil baseUtil = new DataBaseUtil();
@@ -101,7 +108,8 @@ public class SendPosterServlet extends HttpServlet {
 					.makeImageCustomMessage(openID,customMessage.getAdvancedMethod().getActivityImgId(content,token.getAccess_token()));
 			customMessage.getAdvancedMethod().sendCustomMessage(token.getAccess_token(), jsonImageMsg);
 		} catch (Exception e) {
-			System.out.println("sendImgPoster::"+e.toString());
+			logger.error("====通过客服消息发生送活动图片给用户【失败】====");
+			logger.error(e.toString());
 		}
 	}
 

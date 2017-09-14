@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.IntField;
@@ -39,6 +40,8 @@ import oracle.net.aso.d;
  */
 public class ChatService {
 
+	private static Logger logger=ScnuAlumniLogs.getLogger();
+	
 	/**
 	 * 得到索引路径
 	 * @return String
@@ -49,7 +52,7 @@ public class ChatService {
 		//将路径classPath中的%20替换为空格
 		classPath=classPath.replaceAll("%20", " ");
 		//索引存储位置
-		ScnuAlumniLogs.getLogger().debug("索引存储位置-"+classPath+"index/");
+		logger.debug("索引存储位置-"+classPath+"index/");
 		return classPath+"index/";
 	}
 	
@@ -57,6 +60,7 @@ public class ChatService {
 	 * 创建索引
 	 */
 	public static void createIndex(){
+		logger.debug("====创建索引====");
 		//取得问答知识库的所有问答
 		DataBaseUtil baseUtil=new DataBaseUtil();
 		List<Knowledge> knowledges=baseUtil.findAllKnowledge();
@@ -80,8 +84,10 @@ public class ChatService {
 			}
 			indexWriter.close();
 			directory.close();
+			logger.debug("====创建索引【成功】====");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("====创建索引【失败】====");
+			logger.error(e.toString());
 		}
 	}
 	
@@ -92,6 +98,7 @@ public class ChatService {
 	 */
 	@SuppressWarnings("deprecation")
 	private static Knowledge searchIndex(String question){
+		logger.debug("====根据问题从索引文件中检索答案====");
 		Knowledge knowledge=null;
 		try {
 			Directory directory=FSDirectory.open(new File(getIndexDir()));
@@ -115,9 +122,11 @@ public class ChatService {
 			}
 			indexReader.close();
 			directory.close();
+			logger.debug("====根据问题从索引文件中检索答案【成功】====");
 		} catch (Exception e) {
 			knowledge=null;
-			e.printStackTrace();
+			logger.error("====根据问题从索引文件中检索答案【失败】====");
+			logger.error(e.toString());
 		}
 		return knowledge;
 	}
@@ -130,6 +139,7 @@ public class ChatService {
 	 * @return
 	 */
 	public static String chat(String openId,String createTime,String question){
+		logger.debug("====聊天方法，根据question返回answer====");
 		String answer=null;
 		int chatCategory=0;
 		Knowledge knowledge=searchIndex(question);
@@ -164,8 +174,10 @@ public class ChatService {
 				break;
 				
 			}
+			logger.debug("====聊天方法，根据question返回answer【找到匹配项】====");
 		}else {
 			//未找到匹配项
+			logger.error("====聊天方法，根据question返回answer【未找到匹配项】====");
 			answer=getDefaultAnswer();
 			chatCategory=0;
 		}

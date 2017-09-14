@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -18,6 +19,7 @@ import org.dom4j.Element;
 import com.newttl.scnualumni_gz.baidumap.BaiduPoiPlace;
 import com.newttl.scnualumni_gz.bean.database.UserLocation;
 import com.newttl.scnualumni_gz.bean.response.Article;
+import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
 import com.newttl.scnualumni_gz.weixin.WeiXinCommon;
 
 import it.sauronsoftware.base64.Base64;
@@ -31,6 +33,8 @@ import net.sf.json.JSONObject;
  * 2017年7月14日 上午10:32:26
  */
 public class BaiduMapUtil {
+	
+	private static Logger logger=ScnuAlumniLogs.getLogger();
 
 	/**
 	 * 根据关键词，转换后的百度坐标去poi周边
@@ -42,24 +46,22 @@ public class BaiduMapUtil {
 	 * @return List<BaiduPoiPlace> 返回poi周边地址列表
 	 */
 	public static List<BaiduPoiPlace> searchPoiPlace(String query,String lat,String lng,String ak){
+		logger.debug("====根据关键词，转换后的百度坐标去poi周边====");
 		//拼接请求地址
 		String requestUrl = "http://api.map.baidu.com/place/v2/search?&query=QUERY&location=LNG,LAT&radius=2000&output=xml&scope=2&page_size=10&page_num=0&ak=AK";
 		List<BaiduPoiPlace> placeList=null;
 		try {
 			requestUrl=requestUrl.replace("QUERY", URLEncoder.encode(query,"UTF-8"));
-			requestUrl=requestUrl.replace("LAT", lat.trim());//lat.trim()
-			requestUrl=requestUrl.replace("LNG", lng.trim());//lng.trim()
+			requestUrl=requestUrl.replace("LAT", lat.trim());
+			requestUrl=requestUrl.replace("LNG", lng.trim());
 			requestUrl=requestUrl.replace("AK", ak);
-			
-			System.out.println("searchPoiPlace::"+requestUrl);
-			
 			//调用place api圆形区域检索
 			String respXml=httpRequest(requestUrl);
 			//解析获取到的xml地址列表
 			placeList=parsePlaceXml(respXml);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			System.out.println("searchPoiPlace::"+e.toString());
+			logger.error("====根据关键词，转换后的百度坐标去poi周边【失败】====");
+			logger.error(e.toString());
 		}
 		
 		return placeList;
@@ -71,6 +73,7 @@ public class BaiduMapUtil {
 	 * @return String 返回请求获取的xml信息
 	 */
 	public static String httpRequest(String requestUrl){
+		logger.debug("====发起HTTP请求====");
 		StringBuffer buffer=new StringBuffer();
 		URL url;
 		try {
@@ -94,8 +97,8 @@ public class BaiduMapUtil {
 			inputStream=null;
 			httpURLConnection.disconnect();
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("BaiduMapUtil::"+"\n"+e.toString());
+			logger.error("====发起HTTP请求【失败】====");
+			logger.error(e.toString());
 		}
 		return buffer.toString();
 	}
@@ -106,6 +109,7 @@ public class BaiduMapUtil {
 	 * @return List<BaiduPoiPlace> 返回poi到的信息列表
 	 */
 	private static List<BaiduPoiPlace> parsePlaceXml(String placeXml){
+		logger.debug("====解析xml数据====");
 		List<BaiduPoiPlace> placeList=null;
 		try {
 			Document document=DocumentHelper.parseText(placeXml);
@@ -162,7 +166,8 @@ public class BaiduMapUtil {
 			}
 			
 		} catch (Exception e) {
-			System.out.println("BaiduMapUtil-parsePlaceXml::"+"\n"+e.toString());
+			logger.error("====解析xml数据【失败】====");
+			logger.error(e.toString());
 		}
 		return placeList;
 	}
@@ -176,6 +181,7 @@ public class BaiduMapUtil {
 	 * @return  List<Article> 返回图文列表
 	 */
 	public static List<Article> makeArticleList(List<BaiduPoiPlace> placeList,String bd09Lng,String bd09Lat){
+		logger.debug("====根据poi到的地址列表组装图文消息列表====");
 		//项目的根路径
 		String projBasePath=WeiXinCommon.projectUrl;
 		List<Article> articleList=new ArrayList<Article>();
@@ -191,7 +197,7 @@ public class BaiduMapUtil {
 				article.setPicUrl(projBasePath + "images/poisearch.png");
 			else
 				article.setPicUrl(projBasePath + "images/navi.png");
-			articleList.add(article);
+				articleList.add(article);
 		}
 		return articleList;
 	}
@@ -207,6 +213,7 @@ public class BaiduMapUtil {
 	 */
 	
 	public static UserLocation convertLatlng(String lng,String lat){
+		logger.debug("====将用户发送过来的经纬度转换成百度坐标系====");
 		// 百度坐标转换接口
 		String convertUrl = "http://api.map.baidu.com/ag/coord/convert?from=2&to=4&x={x}&y={y}";
 		convertUrl = convertUrl.replace("{x}", lng);
@@ -220,7 +227,8 @@ public class BaiduMapUtil {
 			userLocation.setBd09Lat(Base64.decode(jsonObject.getString("y"),"UTF-8").trim());
 		} catch (Exception e) {
 			userLocation=null;
-			e.printStackTrace();
+			logger.error("====将用户发送过来的经纬度转换成百度坐标系【失败】====");
+			logger.error(e.toString());
 		}
 		return userLocation;
 	}

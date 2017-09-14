@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -41,11 +42,12 @@ public class SignUpServlet extends HttpServlet {
 	 * add generated serial Version ID
 	 */
 	private static final long serialVersionUID = -2714335254760543111L;
+	private static Logger logger=ScnuAlumniLogs.getLogger();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		ScnuAlumniLogs.getLogger().debug("【个人中心】网页授权");
+		logger.debug("【个人中心】网页授权");
 		
 		//设置编码格式，防止中文出现乱码
 		req.setCharacterEncoding("UTF-8");
@@ -54,7 +56,7 @@ public class SignUpServlet extends HttpServlet {
 		//用户同意授权后，能够获得 code
 		String code=req.getParameter("code");
 		
-		ScnuAlumniLogs.getLogger().debug("【个人中心】网页授权-授权码::"+code);
+		logger.debug("【个人中心】网页授权-授权码::"+code);
 		
 		//用户同意授权
 		if (!(code.equals("authdeny"))) {
@@ -72,12 +74,14 @@ public class SignUpServlet extends HttpServlet {
 				req.setAttribute("snsUserInfo", snsUserInfo);
 				//跳转到目标页面
 				req.getRequestDispatcher("signUp.jsp").forward(req, resp);
+				logger.debug("授权【成功】");
 			}else {
 				//将未获取到授权的信息传递到目标页面
 				String erro="未授权!";
 				req.setAttribute("snsUserInfo", erro);
 				//跳转到目标页面
 				req.getRequestDispatcher("myIndex.jsp").forward(req, resp);
+				logger.error("【未授权】");
 			}
 		}
 	}

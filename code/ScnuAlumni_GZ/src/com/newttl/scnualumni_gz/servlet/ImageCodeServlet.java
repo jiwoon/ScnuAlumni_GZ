@@ -15,6 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
+import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
+
 /**
  * 图片验证码接口
  * @author lgc
@@ -22,6 +26,8 @@ import javax.servlet.http.HttpSession;
  * 2017年8月9日 上午8:41:25
  */
 public class ImageCodeServlet extends HttpServlet {
+	
+	private static Logger logger=ScnuAlumniLogs.getLogger();
 
 	private static final long serialVersionUID = -98861507364053125L;
 
@@ -79,7 +85,7 @@ public class ImageCodeServlet extends HttpServlet {
 		HttpSession session =req.getSession();
 		String verificationCode = ((String)session.getAttribute("verificationCode")).toLowerCase();
 		String checkcode = req.getParameter("op").toLowerCase();
-		System.out.println("verificationCode::"+verificationCode+"\n"+"checkcode::"+checkcode);
+		logger.debug("verificationCode::"+verificationCode+"\n"+"checkcode::"+checkcode);
 		PrintWriter out = resp.getWriter();
 		if(checkcode.equals(verificationCode)){
 			out.println(1);

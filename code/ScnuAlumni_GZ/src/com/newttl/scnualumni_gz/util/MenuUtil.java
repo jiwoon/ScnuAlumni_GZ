@@ -1,7 +1,7 @@
 package com.newttl.scnualumni_gz.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.log4j.Logger;
 
 import com.newttl.scnualumni_gz.bean.menu.Menu;
 import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
@@ -17,7 +17,7 @@ import net.sf.json.JSONObject;
  * @date 2017年6月9日 下午2:29:10
  */
 public class MenuUtil {
-	
+	private static Logger logger=ScnuAlumniLogs.getLogger();
 	//创建菜单  POST（请使用https协议）
 	private final static String menu_create_url=" https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
 	//查询菜单  GET
@@ -34,11 +34,12 @@ public class MenuUtil {
 	 *   失败时返回      {"errcode":40018,"errmsg":"invalid button name size"}
 	 */
 	public static boolean createMenu(Menu menu,String access_token){
+		logger.debug("====创建菜单====");
 		boolean result=false;
 		String url=menu_create_url.replace("ACCESS_TOKEN", access_token);
 		//将菜单对象转换为json数据
 		String jsonMenu=JSONObject.fromObject(menu).toString();
-		ScnuAlumniLogs.getLogger().debug("菜单数据-jsonMenu::"+jsonMenu);
+		logger.debug("菜单数据-jsonMenu::"+jsonMenu);
 		//发起HTTPS的POST请求，创建菜单
 		JSONObject jsonResult= CommonUtil.httpsRequest(url, "POST", jsonMenu);
 		if (jsonResult != null) {
@@ -46,10 +47,12 @@ public class MenuUtil {
 			String errmsg=jsonResult.getString("errmsg");
 			if (errcode == 0) {
 				result=true;
+				logger.debug("====创建菜单【成功】====");
 			}else {
 				result=false;
-				ScnuAlumniLogs.getLogger().error("创建菜单失败::"+jsonResult.toString());
+				logger.error("====创建菜单【失败】====");
 			}
+			logger.debug(jsonResult.toString());
 		}
 		return result;
 	}
@@ -60,6 +63,7 @@ public class MenuUtil {
 	 * @return 查询到返回菜单json数据，否则返回null
 	 */
 	public static String getMenu(String access_token){
+		logger.debug("====查询菜单====");
 		String result=null;
 		String url=menu_get_url.replace("ACCESS_TOKEN", access_token);
 		//发起HTTPS的GET请求，获取菜单json数据
@@ -67,6 +71,7 @@ public class MenuUtil {
 		if (jsonObject !=null) {
 			result=jsonObject.toString();
 		}
+		logger.debug("菜单::"+result);
 		return result;
 	}
 	

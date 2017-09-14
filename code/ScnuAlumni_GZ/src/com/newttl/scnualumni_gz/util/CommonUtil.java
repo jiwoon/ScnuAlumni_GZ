@@ -20,11 +20,11 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.mapper.OuterClassMapper;
 import com.newttl.scnualumni_gz.bean.pojo.Token;
+import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
 import com.newttl.scnualumni_gz.util.MyX509TrustManager;
 
 import net.sf.json.JSONException;
@@ -39,7 +39,7 @@ import net.sf.json.JSONObject;
  */
 public class CommonUtil {
 
-//	private static Logger log = LoggerFactory.getLogger(CommonUtil.class);
+	private static Logger logger=ScnuAlumniLogs.getLogger();
 	
 	// access_token凭证获取（GET）的url
 	public final static String token_url = 
@@ -53,6 +53,8 @@ public class CommonUtil {
 	 * @return 返回JSONObject对象 
 	 */
 	public static JSONObject httpsRequest(String requestUrl,String requstMethod,String outPutStr){
+		
+		logger.debug("====发起https请求 ====");
 		
 		JSONObject jsonObject=null;
 
@@ -99,19 +101,18 @@ public class CommonUtil {
 			//返回JSONObject对象
 			jsonObject=JSONObject.fromObject(buffer.toString());
 		} catch (IOException e) {
-//				e.printStackTrace();
-				System.out.println("IOException::"+"\n"+e.getMessage());
+			logger.error("====发起https请求 【失败】====");
+			logger.error(e.toString());
 		} catch (KeyManagementException e) {
-//				e.printStackTrace();
-			System.out.println("KeyManagementException::"+"\n"+e.getMessage());
+			logger.error("====发起https请求 【失败】====");
+			logger.error(e.toString());
 		}catch (NoSuchAlgorithmException e) {
-//			e.printStackTrace();
-			System.out.println("NoSuchAlgorithmException::"+"\n"+e.getMessage());
+			logger.error("====发起https请求 【失败】====");
+			logger.error(e.toString());
 		} catch (NoSuchProviderException e) {
-//			e.printStackTrace();
-			System.out.println("NoSuchProviderException::"+"\n"+e.getMessage());
+			logger.error("====发起https请求 【失败】====");
+			logger.error(e.toString());
 		}
-		
 		
 		return jsonObject;
 		
@@ -124,6 +125,7 @@ public class CommonUtil {
 	 * @return
 	 */
 	public static Token getToken(String appID,String appsecret){
+		logger.debug("====获取凭证Token====");
 		Token token=null;
 		String requestUrl=token_url.replace("APPID", appID).replace("APPSECRET", appsecret);
 		//GET方法请求HTTPS，不提交数据
@@ -133,12 +135,11 @@ public class CommonUtil {
 				token=new Token();
 				token.setAccess_token(jsonObject.getString("access_token"));
 				token.setExpires_in(jsonObject.getInt("expires_in"));
+				logger.debug("====获取凭证Token【成功】====");
 			} catch (JSONException  e) {
-//				e.printStackTrace();
 				token = null;
-				// 获取token失败
-//				log.error("获取token失败 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));
-				System.out.println("获取token失败");
+				logger.error("====获取凭证Token【失败】====");
+				logger.error(e.toString());
 			}
 		}
 		

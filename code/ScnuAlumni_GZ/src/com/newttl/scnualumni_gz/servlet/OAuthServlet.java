@@ -7,8 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.newttl.scnualumni_gz.bean.pojo.SNSUserInfo;
 import com.newttl.scnualumni_gz.bean.pojo.WeiXinOauth2Token;
+import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
 import com.newttl.scnualumni_gz.util.AdvancedUtil;
 import com.newttl.scnualumni_gz.weixin.WeiXinCommon;
 
@@ -25,12 +28,11 @@ public class OAuthServlet extends HttpServlet {
 	 * add generated serial Version ID
 	 */
 	private static final long serialVersionUID = -5888420896380854918L;
+	private static Logger logger=ScnuAlumniLogs.getLogger();
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		System.out.println("OAuthServlet doGet");
-		
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {		
+		logger.debug("授权");
 		//设置编码格式，防止中文出现乱码
 		req.setCharacterEncoding("gb2312");
 		resp.setCharacterEncoding("gb2312");
@@ -38,7 +40,7 @@ public class OAuthServlet extends HttpServlet {
 		//用户同意授权后，能够获得 code
 		String code=req.getParameter("code");
 		
-		System.out.println("code::"+code);
+		logger.debug("code::"+code);
 		
 		//用户同意授权
 		if (!(code.equals("authdeny"))) {

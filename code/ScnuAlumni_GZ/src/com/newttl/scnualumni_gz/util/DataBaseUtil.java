@@ -12,11 +12,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.newttl.scnualumni_gz.bean.database.Activity;
 import com.newttl.scnualumni_gz.bean.database.Alumnus;
 import com.newttl.scnualumni_gz.bean.database.Knowledge;
 import com.newttl.scnualumni_gz.bean.database.SignedUser;
 import com.newttl.scnualumni_gz.bean.database.UserLocation;
+import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -32,12 +35,12 @@ import net.sf.json.JSONObject;
 public class DataBaseUtil {
 
 	private static Connection conn;
-//	private static Statement sql;
-	
+	private static Logger logger=ScnuAlumniLogs.getLogger();	
 	/**
 	 * 链接数据库
 	 */
 	public DataBaseUtil(){
+		logger.debug("====链接数据库====");
 		//驱动
 		String driver="com.mysql.jdbc.Driver";
 		// URL指向要访问的数据库名wechat_data
@@ -49,16 +52,18 @@ public class DataBaseUtil {
 		//加载驱动
         try {
 			Class.forName(driver);
+			logger.debug("====加载驱动【成功】====");
 		} catch (ClassNotFoundException e) {
-			System.out.print("DataBaseUtil-ClassNotFoundException::"+"\n"+e.getLocalizedMessage());
-			e.printStackTrace();
+			logger.error("====加载驱动【失败】====");
+			logger.error(e.toString());
 		}
         //链接数据库
         try {
 			conn=DriverManager.getConnection(url, userName, password);
+			logger.debug("====链接数据库【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.print("DataBaseUtil-SQLException::"+"\n"+e.getLocalizedMessage());
+			logger.error("====链接数据库【失败】====");
+			logger.error(e.toString());
 		}
 		
         
@@ -82,13 +87,14 @@ public class DataBaseUtil {
 	}
 	
 	/**
-	 * 释放 jdbc 资源
+	 * 释放 jdbc资源
 	 * 
 	 * @param con 数据库链接
 	 * @param ps
 	 * @param rs 数据库结果集
 	 */
 	private static void releaseResources(Connection con,PreparedStatement ps,ResultSet rs){
+		logger.debug("====释放 jdbc资源====");
 		try {
 			if (rs != null) {
 				rs.close();
@@ -100,8 +106,8 @@ public class DataBaseUtil {
 				con.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("releaseResources::\n"+e.toString());
+			logger.error("====释放 jdbc资源【失败】====");
+			logger.error(e.toString());
 		}
 	}
 	
@@ -111,6 +117,7 @@ public class DataBaseUtil {
 	 * @return List<Knowledge>
 	 */
 	public List<Knowledge> findAllKnowledge(){
+		logger.debug("====获取知识问答表中的所有记录====");
 		List<Knowledge> knowledges=new ArrayList<Knowledge>();
 		String sqlStr = "select * from knowledge";
 		PreparedStatement ps=null;
@@ -126,9 +133,10 @@ public class DataBaseUtil {
 				knowledge.setCategory(rs.getInt("category"));
 				knowledges.add(knowledge);
 			}
+			logger.debug("====获取知识问答表中的所有记录【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("findAllKnowledge::\n"+e.toString());
+			logger.error("====获取知识问答表中的所有记录【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -142,6 +150,7 @@ public class DataBaseUtil {
 	 * @return int 返回类型 1-普通聊天，2-笑话，3-上下文
 	 */
 	public int getLastCategory(String openId){
+		logger.debug("====获取上一次聊天记录的类型====");
 		int category=-1;
 		String sqlStr="select top 1 chat_category from chat_log where open_id=? order by id desc";
 		PreparedStatement ps=null;
@@ -153,9 +162,10 @@ public class DataBaseUtil {
 			if (rs.next()) {
 				category=rs.getInt("chat_category");
 			}
+			logger.debug("====获取上一次聊天记录的类型【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("getLastCategory::\n"+e.toString());
+			logger.error("====获取上一次聊天记录的类型【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -169,6 +179,7 @@ public class DataBaseUtil {
 	 * @return String 返回回答内容
 	 */
 	public String getOneKnowledgeSub(int pid){
+		logger.debug("====根据问答知识id，随机获取一条答案回复用户====");
 		String knowledgeAnswer="";
 		String sqlStr="select top 1 answer from knowledge_sub where pid=? order by rand()";
 		PreparedStatement ps=null;
@@ -180,8 +191,10 @@ public class DataBaseUtil {
 			if (rs.next()) {
 				knowledgeAnswer=rs.getString("answer");
 			}
+			logger.debug("====根据问答知识id，随机获取一条答案回复用户【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("====根据问答知识id，随机获取一条答案回复用户【失败】====");
+			logger.error(e.toString());
 			System.out.println("getOneKnowledgeSub::\n"+e.toString());
 		}finally {
 			//释放资源
@@ -195,6 +208,7 @@ public class DataBaseUtil {
 	 * @return
 	 */
 	public String getJoke(){
+		logger.debug("====随机获取一条笑话====");
 		String jokeContent="";
 		String sqlStr="SELECT TOP 1 joke_content FROM joke ORDER BY NEWID()";
 		PreparedStatement ps=null;
@@ -205,9 +219,10 @@ public class DataBaseUtil {
 			if (rs.next()) {
 				jokeContent=rs.getString("joke_content");
 			}
+			logger.debug("====随机获取一条笑话【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("getJoke::\n"+e.toString());
+			logger.error("====随机获取一条笑话【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -225,6 +240,7 @@ public class DataBaseUtil {
 	 * @return
 	 */
 	public int saveChatLog(String open_id,String create_time,String req_msg,String resp_msg,int chat_category){
+		logger.debug("====保存聊天记录====");
 		String sqlStr="insert into chat_log(open_id, create_time, req_msg, resp_msg, chat_category) values(?, ?, ?, ?, ?)";
 		int insert = -1;
 		PreparedStatement ps=null;
@@ -237,9 +253,10 @@ public class DataBaseUtil {
 			ps.setString(4, resp_msg);
 			ps.setInt(5, chat_category);
 			insert=ps.executeUpdate();
+			logger.debug("====保存聊天记录【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("saveChatLog::\n"+e.toString());
+			logger.error("====保存聊天记录【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -257,6 +274,7 @@ public class DataBaseUtil {
 	 * @return int 插入的位置
 	 */
 	public int saveUserLocation(String openID,String lng,String lat,String bd09Lng,String bd09Lat){
+		logger.debug("====向数据库插入用户发送过来的位置信息====");
 		String sqlStr = "insert into user_location(open_id, lng, lat, bd09_lng, bd09_lat) values (?, ?, ?, ?, ?)";
 		int insertIndex=-1;
 		PreparedStatement ps=null;
@@ -268,10 +286,10 @@ public class DataBaseUtil {
 			ps.setString(4, bd09Lng);
 			ps.setString(5, bd09Lat);
 			insertIndex=ps.executeUpdate();
-			
+			logger.debug("====向数据库插入用户发送过来的位置信息【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("saveUserLocation::\n"+e.toString());
+			logger.error("====向数据库插入用户发送过来的位置信息【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, null);
@@ -285,6 +303,7 @@ public class DataBaseUtil {
 	 * @return UserLocation 返回用户位置信息对象
 	 */
 	public UserLocation getLastLoaction(String openId){
+		logger.debug("====获取用户最后一次发送的地理位置，用于poi用户周边====");
 		UserLocation userLocation=null;
 		String sqlStr = "select * from user_location where open_id=? order by id desc limit 1";
 		PreparedStatement ps=null;
@@ -301,9 +320,10 @@ public class DataBaseUtil {
 				userLocation.setBd09Lng(rs.getString("bd09_lng"));
 				userLocation.setBd09Lat(rs.getString("bd09_lat"));
 			}
+			logger.debug("====获取用户最后一次发送的地理位置，用于poi用户周边【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("getLastLoaction::\n"+e.toString());
+			logger.error("====获取用户最后一次发送的地理位置，用于poi用户周边【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -317,6 +337,7 @@ public class DataBaseUtil {
 	 * @return false 未注册 | true 已注册
 	 */
 	public boolean isSigned(String openId){
+		logger.debug("====查询指定openId的用户是否注册了====");
 		boolean signed=false;
 		String sqlStr="select * from signed_users where openId=?";
 		PreparedStatement ps=null;
@@ -327,12 +348,14 @@ public class DataBaseUtil {
 			rs=ps.executeQuery();
 			if (rs.next()) {
 				signed=true;
+				logger.debug("====【用户已注册】====");
 			}else {
 				signed=false;
+				logger.debug("====【用户未注册】====");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("isSigned::\n"+e.toString());
+			logger.error("====查询【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -347,6 +370,7 @@ public class DataBaseUtil {
 	 * @return 已注册,则返回用户信息实例SignedUser;未注册,则返回null
 	 */
 	public SignedUser getSigned(String openId){
+		logger.debug("====判断指定openId的用户是否注册====");
 		SignedUser signedUser=null;
 		String sqlStr="select * from signed_users where openId=?";
 		PreparedStatement ps=null;
@@ -371,13 +395,15 @@ public class DataBaseUtil {
 				signedUser.setHobby(rs.getString("hobby"));
 				signedUser.setProfession(rs.getString("profession"));
 				signedUser.setSex(rs.getString("sex"));
+				logger.debug("====【用户已注册】====");
 			}else {
 				signedUser=null;
+				logger.debug("====【用户未注册】====");
 			}
 		} catch (SQLException e) {
 			signedUser=null;
-			e.printStackTrace();
-			System.out.println("isSigned::\n"+e.toString());
+			logger.error("====查询【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -391,6 +417,7 @@ public class DataBaseUtil {
 	 * @return  int
 	 */
 	public int saveSignedUser(SignedUser signedUser){
+		logger.debug("====保存用户注册的信息====");
 		String sqlStr = "insert into signed_users(openId, headImgUrl, sex, userName, college, userClass, grade, city, contact, contactType, industry, hobby, profession) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		int insert=-1;
 		PreparedStatement ps=null;
@@ -412,9 +439,10 @@ public class DataBaseUtil {
 			ps.setString(13, signedUser.getProfession());
 			
 			insert=ps.executeUpdate();
+			logger.debug("====保存用户注册的信息【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("saveUserLocation::\n"+e.toString());
+			logger.error("====保存用户注册的信息【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -422,14 +450,13 @@ public class DataBaseUtil {
 		return insert;
 	}
 
-	
-	
 	/**
 	 * 更新用户修改的个人信息
 	 * @param signedUser
 	 * @return int
 	 */
 	public int updateSignedUser(SignedUser signedUser){
+		logger.debug("====更新用户修改的个人信息====");
 //openId, headImgUrl, sex, userName, college, userClass, grade, city, contact, contactType, industry, hobby, profession
 		String sqlStr="update signed_users set headImgUrl=?, userName=?, college=?, userClass=?, grade=?, contact=?, contactType=?, city=?, industry=?, hobby=?, profession=?, sex=? where openId=?";
 		int update=-1;
@@ -451,10 +478,10 @@ public class DataBaseUtil {
 			ps.setString(12, signedUser.getSex());
 			ps.setString(13, signedUser.getOpenId());
 			update=ps.executeUpdate();
-			
+			logger.debug("====更新用户修改的个人信息【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("saveUserLocation::\n"+e.toString());
+			logger.error("====更新用户修改的个人信息【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -463,11 +490,11 @@ public class DataBaseUtil {
 	}
 	
 	/**
-	 * 获取某一个活动
+	 * 获取对应id的某一个活动
 	 * @return List<Activity>
 	 */
 	public Activity getTheActivity(int id){
-		
+		logger.debug("====获取对应id的某一个活动====");
 		String sqlStr="select * from activity where id=?";
 		Activity activity=new Activity();
 		PreparedStatement ps=null;
@@ -484,9 +511,10 @@ public class DataBaseUtil {
 				activity.setActivityIntro(rs.getString("activity_intro"));
 				activity.setActivityHolder(rs.getString("activity_holder"));
 			}
+			logger.debug("====获取对应id的某一个活动【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("getTheActivity::\n"+e.toString());
+			logger.error("====获取对应id的某一个活动【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -500,6 +528,7 @@ public class DataBaseUtil {
 	 * @return  int
 	 */
 	public int saveActivity(Activity activity){
+		logger.debug("====保存校友活动的信息====");
 //		openId headImgUrl userName phone QQ eMail city industry hobby profession sex
 		String sqlStr = "insert into activity (openid,activity_name,"
 				+ "activity_address,start_time,end_time,activity_intro,activity_holder) values(?,?,?,?,?,?,?)";
@@ -517,9 +546,9 @@ public class DataBaseUtil {
 			ps.setString(7, activity.getActivityHolder());
 			
 			insert=ps.executeUpdate();
+			logger.debug("====保存校友活动的信息【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("saveActivity::\n"+e.toString());
+			logger.error("====保存校友活动的信息【失败】====");
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -534,6 +563,7 @@ public class DataBaseUtil {
 	 * @return 
 	 */
 	public int updateActivity(Activity activity){
+		logger.debug("====更新校友活动信息====");
 		String sqlStr="update activity set activity_name=?, activity_address=?, start_time=?, end_time=?, activity_intro=? where id=?";
 		int update=-1;
 		PreparedStatement ps=null;
@@ -547,10 +577,11 @@ public class DataBaseUtil {
 			ps.setString(5, activity.getActivityIntro());
 			ps.setInt(6, activity.getId());
 			
-			update=ps.executeUpdate();	
+			update=ps.executeUpdate();
+			logger.debug("====更新校友活动信息【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("updateActivity::\n"+e.toString());
+			logger.error("====更新校友活动信息【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -564,6 +595,7 @@ public class DataBaseUtil {
 	 * @return int
 	 */
 	public int deleteActivity(int id){
+		logger.debug("====删除校友活动信息====");
 		String sqlStr="delete from activity where id =?";
 		int delete=-1;
 		PreparedStatement ps=null;
@@ -572,10 +604,10 @@ public class DataBaseUtil {
 			ps=conn.prepareStatement(sqlStr);
 			ps.setInt(1, id);
 			delete=ps.executeUpdate();
-			
+			logger.debug("====删除校友活动信息【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("deleteActivity::\n"+e.toString());
+			logger.error("====删除校友活动信息【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -588,6 +620,7 @@ public class DataBaseUtil {
 	 * @return List<Activity>
 	 */
 	public List<Activity> getSomeActivity(String openid){
+		logger.debug("====获取某微信用户发起过的校友活动====");
 		String sqlStr="select * from activity where openid=? order by id desc";
 
 		List<Activity> activitys=new ArrayList<Activity>();
@@ -609,9 +642,10 @@ public class DataBaseUtil {
 				activity.setId(rs.getInt("id"));
 				activitys.add(activity);	
 			}
+			logger.debug("====获取某微信用户发起过的校友活动【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("getSomeActivity::\n"+e.toString());
+			logger.error("====获取某微信用户发起过的校友活动【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -624,6 +658,7 @@ public class DataBaseUtil {
 	 * @return List<Activity>
 	 */
 	public List<Activity> getAllActivity(){
+		logger.debug("====获取所有校友活动信息====");
 		Date date = new Date();
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		String time = format.format(date);	
@@ -644,9 +679,10 @@ public class DataBaseUtil {
 				activity.setEndTime(rs.getString("end_time"));
 				activitys.add(activity);	
 			}
+			logger.debug("====获取所有校友活动信息【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("getAllActivity::\n"+e.toString());
+			logger.error("====获取所有校友活动信息【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -665,6 +701,7 @@ public class DataBaseUtil {
 	 * @return  
 	 */
 	public int saveQRCodeParmer(String provider,String receiver,String ticket,String time,String providerName,String receiverName){
+		logger.debug("====保存推荐二维码扫描后用户之间的关系====");
 		String sqlStr = "insert into UserRelation (qr_provider,qr_receiver,"
 		+ "qr_ticket,qr_time,qr_provider_name,qr_receiver_name) values(?,?,?,?,?,?)";
 		int insert=-1;
@@ -680,9 +717,10 @@ public class DataBaseUtil {
 			ps.setString(6, receiverName);
 		
 			insert=ps.executeUpdate();
+			logger.debug("====保存推荐二维码扫描后用户之间的关系【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("saveQRCodeParmer::\n"+e.toString());
+			logger.error("====保存推荐二维码扫描后用户之间的关系【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -696,6 +734,7 @@ public class DataBaseUtil {
 	 * @return List<SignedUser> 所有对应名字的校友集合
 	 */
 	public List<SignedUser> searchSchoolMate(String name){
+		logger.debug("====根据姓名查找校友====");
 		String sqlStr="select * from signed_users where userName=?";
 		List<SignedUser> signedUsers=new ArrayList<SignedUser>();
 		PreparedStatement ps=null;
@@ -721,9 +760,10 @@ public class DataBaseUtil {
 				signedUser.setSex(rs.getString("sex"));
 				signedUsers.add(signedUser);
 			}
+			logger.debug("====根据姓名查找校友【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("searchSchoolMate::\n"+e.toString());
+			logger.error("====根据姓名查找校友【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -737,6 +777,7 @@ public class DataBaseUtil {
 	 * @return List<String>
 	 */
 	public JSONObject getAlumnisName(String name){
+		logger.debug("====模糊搜索返回带相同字的校友名字====");
 		String sqlStr="select openId,userName,headImgUrl from signed_users where userName like ?";
 //		List<String> names=new ArrayList<String>();
 		JSONObject jsonObject=new JSONObject();
@@ -758,10 +799,11 @@ public class DataBaseUtil {
 					array.add(sub);
 				}
 				jsonObject.put("users", array);
+				logger.debug("====模糊搜索返回带相同字的校友名字【成功】====");
 			} catch (SQLException e) {
 				jsonObject=null;
-				e.printStackTrace();
-				System.out.println("getAlumnisName::\n"+e.toString());
+				logger.error("====模糊搜索返回带相同字的校友名字【失败】====");
+				logger.error(e.toString());
 			}finally {
 				//释放资源
 				releaseResources(conn, ps, rs);
@@ -769,6 +811,7 @@ public class DataBaseUtil {
 		}else {
 			JSONArray none=new JSONArray();
 			jsonObject.put("users", none);
+			logger.error("====【输入名字为空】====");
 		}
 		
 		return jsonObject;
@@ -779,6 +822,7 @@ public class DataBaseUtil {
 	 * @return List<Alumnus>
 	 */
 	public List<Alumnus> getAllAlumnus(){
+		logger.debug("====获取所有校友，显示在查找校友主页====");
 		String sqlStr="SELECT openId,userName,headImgUrl FROM signed_users ORDER BY CONVERT(userName USING gbk ) COLLATE gbk_chinese_ci ASC";
 		List<Alumnus> alumnus=new ArrayList<Alumnus>();
 		PreparedStatement ps=null;
@@ -793,9 +837,10 @@ public class DataBaseUtil {
 				alumni.setHeadImgUrl(rs.getString("headImgUrl"));
 				alumnus.add(alumni);
 			}
+			logger.debug("====获取所有校友，显示在查找校友主页【成功】====");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("getAllAlumnus::\n"+e.toString());
+			logger.error("====获取所有校友，显示在查找校友主页【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -819,15 +864,17 @@ public class DataBaseUtil {
      *@return createIndex
 	 */
 	public static int createTable2RemoteDatabase(String createSqlStr){
+		logger.debug("====向远程数据库新建数据表====");
 		int createIndex=-1;
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		try {
 			ps=conn.prepareStatement(createSqlStr);
 			createIndex=ps.executeUpdate();
+			logger.debug("====向远程数据库新建数据表【成功】====");
 		} catch (SQLException e) {
-			System.out.println("DataBaseUtil-createTable2RemoteDatabase::"+e.toString());
-			e.printStackTrace();
+			logger.error("====向远程数据库新建数据表【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -847,15 +894,17 @@ public class DataBaseUtil {
 	 * @return insertIndex 操作的位置
 	 */
 	public  int cruNewData(String strSql){
+		logger.debug("====增删改数据表====");
 		int index=0;
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		try {
 			ps=conn.prepareStatement(strSql);
 			index=ps.executeUpdate();
+			logger.debug("====增删改数据表【成功】====");
 		} catch (SQLException e) {
-			System.out.print("DataBaseUtil-cruNewData-SQLException::"+"\n"+e.getLocalizedMessage());
-			e.printStackTrace();
+			logger.error("====增删改数据表【失败】====");
+			logger.error(e.toString());
 		}finally {
 			//释放资源
 			releaseResources(conn, ps, rs);
@@ -873,14 +922,16 @@ public class DataBaseUtil {
 	 * @return ResultSet 返回结果集对象实例
 	 */
 	public static ResultSet queryData(String strSql){
+		logger.debug("====顺序查询数据表====");
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		try {
 			ps=conn.prepareStatement(strSql);
 			rs=ps.executeQuery();
+			logger.debug("====顺序查询数据表【成功】====");
 		} catch (SQLException e) {
-			System.out.print("DataBaseUtil-queryData-SQLException::"+"\n"+e.getLocalizedMessage());
-			e.printStackTrace();
+			logger.error("====顺序查询数据表【失败】====");
+			logger.error(e.toString());
 		}
 		return rs;
 	}

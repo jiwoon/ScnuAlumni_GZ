@@ -1,6 +1,8 @@
 package com.newttl.scnualumni_gz.weixin;
 
 
+import org.apache.log4j.Logger;
+
 import com.newttl.scnualumni_gz.bean.menu.Button;
 import com.newttl.scnualumni_gz.bean.menu.ClickButton;
 import com.newttl.scnualumni_gz.bean.menu.ComplexButton;
@@ -21,8 +23,7 @@ import com.newttl.scnualumni_gz.weixin.WeiXinCommon;
  */
 public class MenuManager {
 
-//	private static Logger log = LoggerFactory.getLogger(MenuManager.class);
-	
+	private static Logger logger=ScnuAlumniLogs.getLogger();	
 	/**
 	 * 定义菜单
 	 * @return
@@ -96,14 +97,12 @@ public class MenuManager {
 			//创建菜单
 			boolean createResult=MenuUtil.createMenu(getMenu(), accessToken);
 			if (createResult) {
-				ScnuAlumniLogs.getLogger().debug("创建菜单--成功");
+				logger.debug("创建菜单--成功");
 			}else {
-				ScnuAlumniLogs.getLogger().debug("创建菜单--失败");
+				logger.error("创建菜单--失败");
 			}
 			
 		}
-		
-		
 	}
 	
 }
