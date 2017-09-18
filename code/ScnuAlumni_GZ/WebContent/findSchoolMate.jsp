@@ -1,8 +1,15 @@
+<%@page import="net.sf.json.JSONObject"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+<%@page import="net.sf.json.JSONArray"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.newttl.scnualumni_gz.util.DataBaseUtil"%>
 <%@page import="com.newttl.scnualumni_gz.bean.database.Alumnus"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" pageEncoding="UTF-8"%>
+<%!
+	JSONObject alumnusJson=new JSONObject();
+%>
 <%
 	request.setCharacterEncoding("UTF-8");
 /* 
@@ -12,6 +19,9 @@
 	List<Alumnus> alumnus=new ArrayList<Alumnus>();
 	DataBaseUtil baseUtil=new DataBaseUtil();
 	alumnus=baseUtil.getAllAlumnus();
+	Map map=new HashMap();
+	map.put("users", alumnus);
+	alumnusJson=JSONObject.fromObject(map);
 %>
 
 <!DOCTYPE html>
@@ -51,9 +61,20 @@
 	 z-index:999;
  }
  
+ .m-content{
+    min-height: 500px;
+}
+
+.foot{
+    position:relative;
+    width:100%;
+    height: 50px;
+}
+
  </style>
 
 <script type="text/javascript">
+
 //搜索数据
 function onSearch() {
 	var load=document.getElementById("loadMore");
@@ -69,12 +90,12 @@ function onSearch() {
 			dataType:"json",
 			success:function(data){
 				load.style.visibility="hidden";
+				/* 
 				var resp=JSON.stringify(data);
+				$.alert("data",resp);
 				var jsonObj = JSON.parse(resp);
-				var jsonLength=jsonObj.users.length;
-				if (jsonLength <= 0) {
-					$.toast("不存在该校友!");
-				}
+				 */
+				var jsonLength=data.users.length;
 				//使用模板 ,使用baidu.template命名空间
 				var bt=baidu.template;
 				//可以设置分隔符
@@ -83,17 +104,25 @@ function onSearch() {
 
 				//可以设置输出变量是否自动HTML转义
 				//bt.ESCAPE = false;
-
-				var jsonLength=jsonObj.users.length;
-				//最简使用方法
-				var html=bt('resultmodel',jsonObj);
-				//渲染
-				document.getElementById('result').innerHTML=html;
-				/* document.body.innerHTML=html; */
+				if (jsonLength <= 0) {
+					$.alert("","不存在该校友!",function(){
+						data=<%=alumnusJson%>;
+						document.getElementById("autoComplete").value="";
+						//显示全部的校友(最简使用方法)
+						var html0=bt('resultmodel',data);
+						//渲染
+						document.getElementById('result').innerHTML=html0;
+					});
+				}else{
+					//显示搜索到的校友(最简使用方法)
+					var html=bt('resultmodel',data);
+					//渲染
+					document.getElementById('result').innerHTML=html;
+				}
 			}
 		});
 	}else {
-		alert("请输入正确的名字!");
+		$.alert("","请输入正确的名字!");
 	}
 	
 }
@@ -108,13 +137,14 @@ function alumnus(i) {
 	document.formName.submit();
 }
 
+
 </script>
 
 <!-- 结果显示模板 -->
 <script id="resultmodel" type="text/html">
 
 <!
-	if(users.length > 0){
+	
 		for(var i=0;i<users.length;i++){
 !>
 			<form action="alumniInfo.jsp" method="post" name="alumniform<!=i!>">
@@ -139,21 +169,13 @@ function alumnus(i) {
 <!
 		}
 !>
-<!
-	}else{
-!>
-	<div class="weui_cell">
-    	<div class="weui_cell_hd"><p>不存在该校友,请重新输入!</p></div>
-    </div>
-<!
-	}
-!>
-
 
 </script>
 
 </head>
-<body>
+<body style="height: 100%">
+
+<div class="m-content">
 
 <div class="m-weui-loadmore" id="loadMore" style="visibility: hidden;">
      <i class="weui-loading"></i>
@@ -206,18 +228,17 @@ function alumnus(i) {
 
 </div>	
 
-
-
+</div>
+<!-- 
 <script src="resources/js/fastclick.js"></script>
- 
 <script>
   $(function() {
     FastClick.attach(document.body);
   });
 </script>
-
+ -->
 <br>
-<div class="weui-footer">
+<div class="weui-footer foot">
 	<p class="weui-footer__links">
 		<a href="#" class="weui-footer__link">华师校友通讯录</a>
 	</p>

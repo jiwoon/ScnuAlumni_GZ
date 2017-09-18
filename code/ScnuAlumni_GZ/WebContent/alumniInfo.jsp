@@ -58,7 +58,7 @@
 	document.title="<%=alumniName%>个人信息";
 </script>
 
-<form name="formInfo">
+<form name="formInfo" style="height: 100%">
 <div class="page__bd">
  <div class="weui_cells weui_cells_access"  style="margin-top: 0px">
  	<div class="weui_cell">

@@ -38,6 +38,7 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
  * @date 2017年6月7日 下午2:37:06
  */
 public class MessageUtil {
+	
 	private static Logger logger=ScnuAlumniLogs.getLogger();
 	// 请求消息类型：文本
 	public static final String REQ_MESSAGE_TYPE_TEXT="text";
@@ -83,11 +84,15 @@ public class MessageUtil {
 	// 响应消息类型：图文
 	public static final String RESP_MESSAGE_TYPE_NEWS = "news";
 	
+	public MessageUtil(){
+		
+	}
+	
 	/**
 	 * 解析用户发来的消息(XML)
 	 * @throws IOException 
 	 */
-	public static Map<String, String> parseXml(HttpServletRequest request){
+	public Map<String, String> parseXml(HttpServletRequest request){
 		logger.debug("====解析用户发来的消息(XML)====");
 		//新建HashMap对象，存放解析的内容
 		Map<String, String> msgMap=new HashMap<String,String>();
@@ -124,7 +129,7 @@ public class MessageUtil {
 	 * 扩展xstream使其支持CDATA
 	 * 用于将对象转换为XML,响应用户(发送消息给用户)
 	 */
-	private static XStream xStream=new XStream(new XppDriver(){
+	private XStream xStream=new XStream(new XppDriver(){
 		public HierarchicalStreamWriter createWriter(Writer out){
 			return new PrettyPrintWriter(out){
 				
@@ -154,7 +159,7 @@ public class MessageUtil {
 	 * @param textMessage
 	 * @return xml
 	 */
-	public static String messageToXml(TextMessage textMessage){
+	public String messageToXml(TextMessage textMessage){
 		xStream.alias("xml", textMessage.getClass());
 		return xStream.toXML(textMessage);
 	}
@@ -164,7 +169,7 @@ public class MessageUtil {
 	 * @param imageMessage
 	 * @return xml
 	 */
-	public static String messageToXml(ImageMessage imageMessage){
+	public String messageToXml(ImageMessage imageMessage){
 		xStream.alias("xml", imageMessage.getClass());
 		return xStream.toXML(imageMessage);
 	}
@@ -174,7 +179,7 @@ public class MessageUtil {
 	 * @param voiceMessage
 	 * @return xml
 	 */
-	public static String messageToXml(VoiceMessage voiceMessage){
+	public String messageToXml(VoiceMessage voiceMessage){
 		xStream.alias("xml", voiceMessage.getClass());
 		return xStream.toXML(voiceMessage);
 	}
@@ -184,7 +189,7 @@ public class MessageUtil {
 	 * @param videoMessage
 	 * @return xml
 	 */
-	public static String messageToXml(VideoMessage videoMessage){
+	public String messageToXml(VideoMessage videoMessage){
 		xStream.alias("xml", videoMessage.getClass());
 		return xStream.toXML(videoMessage);
 	}
@@ -194,7 +199,7 @@ public class MessageUtil {
 	 * @param musicMessage
 	 * @return xml
 	 */
-	public static String messageToXml(MusicMessage musicMessage){
+	public String messageToXml(MusicMessage musicMessage){
 		xStream.alias("xml", musicMessage.getClass());
 		return xStream.toXML(musicMessage);
 	}
@@ -204,7 +209,7 @@ public class MessageUtil {
 	 * @param newsMessage
 	 * @return xml
 	 */
-	public static String messageToXml(NewsMessage newsMessage){
+	public String messageToXml(NewsMessage newsMessage){
 		xStream.alias("xml", newsMessage.getClass());
 		xStream.alias("item", new Article().getClass());
 		return xStream.toXML(newsMessage);
@@ -215,7 +220,7 @@ public class MessageUtil {
 	 * @param qrMessage
 	 * @return
 	 */
-	public static String messageToXml(QRCodeEvent qrMessage) {
+	public String messageToXml(QRCodeEvent qrMessage) {
 		xStream.alias("xml", qrMessage.getClass());
 		return xStream.toXML(qrMessage);
 	}

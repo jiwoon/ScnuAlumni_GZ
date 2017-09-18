@@ -191,12 +191,12 @@ public class BaiduMapUtil {
 			Article article=new Article();
 			article.setTitle(baiduPoiPlace.getName()+"\n距离约"+baiduPoiPlace.getDistance()+"米");
 			// P1表示用户发送的位置（坐标转换后），p2表示当前POI所在位置
-			article.setUrl(String.format(projBasePath+ "route.jsp?p1=%s,%s&p2=%s,%s", bd09Lng,bd09Lat,baiduPoiPlace.getLat(),baiduPoiPlace.getLng()));
+			article.setUrl(String.format(projBasePath+ "/route.jsp?p1=%s,%s&p2=%s,%s", bd09Lng,bd09Lat,baiduPoiPlace.getLat(),baiduPoiPlace.getLng()));
 			// 将首条图文的图片设置为大图
 			if (i == 0)
-				article.setPicUrl(projBasePath + "images/poisearch.png");
+				article.setPicUrl(projBasePath + "/images/poisearch.png");
 			else
-				article.setPicUrl(projBasePath + "images/navi.png");
+				article.setPicUrl(projBasePath + "/images/navi.png");
 				articleList.add(article);
 		}
 		return articleList;

@@ -21,6 +21,14 @@
     <url-pattern>/WxServlet</url-pattern>
   </servlet-mapping>
   <servlet>
+  	<servlet-name>WeChatServlet</servlet-name>
+  	<servlet-class>com.newttl.scnualumni_gz.servlet.WeChatServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>WeChatServlet</servlet-name>
+  	<url-pattern>/WeChatServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>SignUpServlet</servlet-name>
     <servlet-class>com.newttl.scnualumni_gz.servlet.SignUpServlet</servlet-class>
   </servlet>

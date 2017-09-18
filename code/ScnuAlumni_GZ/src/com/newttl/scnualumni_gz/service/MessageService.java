@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 import com.newttl.scnualumni_gz.baidumap.BaiduMapUtil;
 import com.newttl.scnualumni_gz.baidumap.BaiduPoiPlace;
 import com.newttl.scnualumni_gz.bean.database.UserLocation;
@@ -14,11 +16,10 @@ import com.newttl.scnualumni_gz.bean.event.QRCodeEvent;
 import com.newttl.scnualumni_gz.bean.pojo.Token;
 import com.newttl.scnualumni_gz.bean.pojo.WeiXinUserInfo;
 import com.newttl.scnualumni_gz.bean.response.Article;
-import com.newttl.scnualumni_gz.bean.response.Image;
-import com.newttl.scnualumni_gz.bean.response.ImageMessage;
 import com.newttl.scnualumni_gz.bean.response.NewsMessage;
 import com.newttl.scnualumni_gz.bean.response.TextMessage;
 import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
+import com.newttl.scnualumni_gz.servlet.HelloWorld;
 import com.newttl.scnualumni_gz.util.AdvancedUtil;
 import com.newttl.scnualumni_gz.util.CommonUtil;
 import com.newttl.scnualumni_gz.util.DataBaseUtil;
@@ -33,9 +34,11 @@ import com.newttl.scnualumni_gz.weixin.WeiXinCommon;
  */
 public class MessageService {
 
+	private static Logger logger=ScnuAlumniLogs.getLogger();
 	private static String access_token;
-	
-	static{
+	private MessageUtil messageUtil;
+	public MessageService(){
+		messageUtil=new MessageUtil();
 		//获取接口凭证
 		Token token=CommonUtil.getToken(WeiXinCommon.appID, WeiXinCommon.appsecret);
 		access_token=token.getAccess_token();
@@ -47,15 +50,19 @@ public class MessageService {
 	 * @param request 用户请求
 	 * @return String respXml 返回用于回复用户的xml消息
 	 */
-	public static String processRequest(HttpServletRequest request){
+	public String processRequest(HttpServletRequest request){
+		logger.debug("====根据用户的请求,进行消息处理====");
 		//返回xml格式的消息
 		String respXml=null;
 		//默认回复的内容
 		String respContent="未知的消息类型！";
 		
+		String req=request.getQueryString();
+		logger.debug(req);
+		
 		try {
 			//解析用户的请求消息
-			Map<String, String> reqMap= MessageUtil.parseXml(request);
+			Map<String, String> reqMap=messageUtil.parseXml(request);
 			//获取各个节点的内容
 			String req_fromUserName=reqMap.get("FromUserName");//用户微信号
 			String req_toUserName=reqMap.get("ToUserName");//开发者微信号
@@ -77,12 +84,14 @@ public class MessageService {
 			switch (req_msgType) {
 			case MessageUtil.REQ_MESSAGE_TYPE_TEXT://文本消息
 				String req_content=reqMap.get("Content").trim();//获取文本消息
+				
+				/*
 				if (req_content.equals("附近")) {
 					//回复文本消息，提示用户发送位置信息
 					respContent=getUsage();
 					textMessage.setContent(respContent);
 					//将文本消息对象转换为XML格式
-					respXml=MessageUtil.messageToXml(textMessage);
+					respXml=messageUtil.messageToXml(textMessage);
 				}else if (req_content.startsWith("附近")) {
 					String keyWord=req_content.replaceAll("附近", "").trim();
 					//获取用户最后一次发送的地址
@@ -93,7 +102,7 @@ public class MessageService {
 						respContent=getUsage();
 						textMessage.setContent(respContent);
 						//将文本消息对象转换为XML格式
-						respXml=MessageUtil.messageToXml(textMessage);
+						respXml=messageUtil.messageToXml(textMessage);
 					}else {
 						//获取到，根据转换后百度坐标系去poi周边
 						List<BaiduPoiPlace> placeList=BaiduMapUtil.searchPoiPlace(keyWord, 
@@ -114,17 +123,21 @@ public class MessageService {
 							newsMessage.setArticleCount(articles.size());
 							newsMessage.setArticles(articles);
 							//将图文消息对象转换为XML格式
-							respXml=MessageUtil.messageToXml(newsMessage);
+							respXml=messageUtil.messageToXml(newsMessage);
 						}
 						
 					}
 				}else {
+					*/
+				
 					//不包含“附近”,则使用自动聊天功能
 					respContent=ChatService.chat(req_fromUserName, req_createTime, req_content);
 					textMessage.setContent(respContent);
 					//将文本消息对象转换为XML格式
-					respXml=MessageUtil.messageToXml(textMessage);
+					respXml=messageUtil.messageToXml(textMessage);
+				/*	
 				}
+			*/
 				break;
 				
 			case MessageUtil.REQ_MESSAGE_TYPE_IMAGE://图片消息
@@ -132,21 +145,24 @@ public class MessageService {
 				//设置文本消息内容
 				textMessage.setContent(respContent);
 				//将文本消息对象转换为XML格式
-				respXml=MessageUtil.messageToXml(textMessage);
+				respXml=messageUtil.messageToXml(textMessage);
 				break;
 				
 			case MessageUtil.REQ_MESSAGE_TYPE_VOICE://语音消息
+				/*
 				//语音的MediaId
 				String mediaId=reqMap.get("MediaId");
 				//从微信服务器下载该语音到本地服务器下
 				AdvancedUtil advancedUtil=new AdvancedUtil();
 				String downLoadFile=advancedUtil.getAdvancedMethod().downLoadMedia(access_token, mediaId, WeiXinCommon.downLoadFilePathComm+"/voice/");
 				ScnuAlumniLogs.getLogger().debug("用户发送语音消息::"+downLoadFile);
+				*/
+				
 				respContent="您发送的是语音消息";
 				//设置文本消息内容
 				textMessage.setContent(respContent);
 				//将文本消息对象转换为XML格式
-				respXml=MessageUtil.messageToXml(textMessage);
+				respXml=messageUtil.messageToXml(textMessage);
 				break;
 				
 			case MessageUtil.REQ_MESSAGE_TYPE_VIDEO://视频消息
@@ -154,7 +170,7 @@ public class MessageService {
 				//设置文本消息内容
 				textMessage.setContent(respContent);
 				//将文本消息对象转换为XML格式
-				respXml=MessageUtil.messageToXml(textMessage);
+				respXml=messageUtil.messageToXml(textMessage);
 				break;
 				
 			case MessageUtil.REQ_MESSAGE_TYPE_SHORTVIDEO://小视频消息
@@ -162,11 +178,12 @@ public class MessageService {
 				//设置文本消息内容
 				textMessage.setContent(respContent);
 				//将文本消息对象转换为XML格式
-				respXml=MessageUtil.messageToXml(textMessage);
+				respXml=messageUtil.messageToXml(textMessage);
 				break;
 				
 			case MessageUtil.REQ_MESSAGE_TYPE_LOCATION://位置消息
 				//TODO
+				
 				//获取用户的经纬度
 				String lng=reqMap.get("Location_X").trim();
 				String lat=reqMap.get("Location_Y").trim();
@@ -187,7 +204,7 @@ public class MessageService {
 				//保存用户位置信息到数据库
 				DataBaseUtil baseUtil=new DataBaseUtil();
 				baseUtil.saveUserLocation(req_fromUserName, lng, lat, bd09Lng, bd09Lat);
-				
+				/*
 				//回复文本消息，提示用户获取位置成功
 				StringBuffer buffer = new StringBuffer();
 				buffer.append("[愉快]").append("成功接收您的位置！").append("\n\n");
@@ -197,10 +214,13 @@ public class MessageService {
 				buffer.append("附近厕所").append("\n");
 				buffer.append("必须以“附近”两个字开头！");
 				respContent = buffer.toString();
+				*/
+				
 				//设置文本消息内容
+				respContent="您发送的是位置消息";
 				textMessage.setContent(respContent);
 				//将文本消息对象转换为XML格式
-				respXml=MessageUtil.messageToXml(textMessage);
+				respXml=messageUtil.messageToXml(textMessage);
 				break;
 				
 			case MessageUtil.REQ_MESSAGE_TYPE_LINK://链接消息
@@ -209,7 +229,7 @@ public class MessageService {
 				//设置文本消息内容
 				textMessage.setContent(respContent);
 				//将文本消息对象转换为XML格式
-				respXml=MessageUtil.messageToXml(textMessage);
+				respXml=messageUtil.messageToXml(textMessage);
 				break;
 				
 			case MessageUtil.REQ_MESSAGE_TYPE_EVENT://事件消息
@@ -247,12 +267,12 @@ public class MessageService {
 						qr.setEvent(MessageUtil.EVENT_TYPE_SUBSCRIBE);
 						qr.setEventKey(eventKey);
 						qr.setTicket(ticket);
-						respXml = MessageUtil.messageToXml(qr);
+						respXml = messageUtil.messageToXml(qr);
 					}
 					
 					// 新用户关注问候语
 					textMessage.setContent(getSubscribeMsg());
-					respXml=MessageUtil.messageToXml(textMessage);
+					respXml=messageUtil.messageToXml(textMessage);
 					break;
 					
 				case MessageUtil.EVENT_TYPE_UNSUBSCRIBE://取消关注
@@ -284,7 +304,7 @@ public class MessageService {
 						newsMessage.setArticleCount(articles.size());
 						newsMessage.setArticles(articles);
 						//将图文消息对象转换为XML格式
-						respXml=MessageUtil.messageToXml(newsMessage);
+						respXml=messageUtil.messageToXml(newsMessage);
 					}
 					break;
 					
@@ -296,8 +316,8 @@ public class MessageService {
 				break;
 			}			
 		} catch (Exception e) {
-			e.printStackTrace();
-			ScnuAlumniLogs.getLogger().error(e);
+			logger.error("====根据用户的请求,进行消息处理【失败】====");
+			logger.error(e.toString());
 		}
 		
 		return respXml;
@@ -344,13 +364,18 @@ public class MessageService {
 	 * @return
 	 */
 	private static List<Article> getAlumniStyle(){
+		String[] title={"一身正气唱响澳门之歌\n满腔热血谱写教育华章\n\n--访澳门特区全国人大代表、澳门中华教育会副会长李沛霖",
+						"一朝华师人 一世母校情\n\n--五位香港老校友速写",
+						"方寸之间的生肖艺术\n传统文化的交融传承\n\n--知名新西兰华侨设计师、美术学院93届校友张向阳",
+						"华师后裔的\"军营梦\"","诗意人生,温润如玉\n\n--访2015届地科院校友陈少玉","黎正平:世界首颗量子卫星科学团队里的华师人",
+						"变中求新 以新创业\n\n--访经济管理学院2015届校友邓永东","广播|华师广播人声路历程之DJ罗武"};
 		List<Article> articles=new ArrayList<Article>();
 		String projBasePath=WeiXinCommon.projectUrl;
 		for (int i = 0; i < 8; i++) {
 			Article article=new Article();
-			article.setTitle("校友"+(i+1)+"的介绍");
-			article.setPicUrl(projBasePath + "images/poisearch.png");
-			article.setUrl(String.format(projBasePath+"alumniNews.jsp?alumni=%s", "校友"+String.valueOf(i+1)));
+			article.setTitle(title[i]);
+			article.setPicUrl(projBasePath+"/images/scnu.jpg");
+			article.setUrl(String.format(projBasePath+"/alumniNews.jsp?alumni=%s", "详细信息待录入"));
 			articles.add(article);
 		}
 		return articles;

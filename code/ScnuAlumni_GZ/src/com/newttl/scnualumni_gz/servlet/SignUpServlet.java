@@ -89,6 +89,7 @@ public class SignUpServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
+		logger.debug("====相应查找校友====");
 		//设置编码格式，防止中文出现乱码
 		/*req.setCharacterEncoding("gb2312");
 		resp.setCharacterEncoding("gb2312");*/
@@ -114,17 +115,18 @@ public class SignUpServlet extends HttpServlet {
 		// 使用JSON-lib解析返回结果 getBytes("iso8859-1"),"utf-8"
 		JSONObject jsonObject = JSONObject.fromObject(buffer.toString());
 		String userName=jsonObject.getString("userName");
-		System.out.println("userName-"+userName);
-		
+		logger.debug("userName-"+userName);
 		//向前台页面输出结果
 		DataBaseUtil baseUtil=new DataBaseUtil();
 		JSONObject respJson=baseUtil.getAlumnisName(userName);
-		System.out.println(String.valueOf(respJson));
+		logger.debug(String.valueOf(respJson));
 		PrintWriter out=resp.getWriter();
 		out.write(String.valueOf(respJson));
 		out.flush();
+		logger.debug("====相应查找校友【成功】====");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("====相应查找校友【失败】====");
+			logger.error(e.toString());
 		}
 		
 	}

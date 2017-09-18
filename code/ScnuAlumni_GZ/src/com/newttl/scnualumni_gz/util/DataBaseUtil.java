@@ -41,14 +41,15 @@ public class DataBaseUtil {
 	 */
 	public DataBaseUtil(){
 		logger.debug("====链接数据库====");
+		
 		//驱动
 		String driver="com.mysql.jdbc.Driver";
 		// URL指向要访问的数据库名wechat_data
-        String url = "jdbc:mysql://127.0.0.1:3306/wechat_data";
+        String url = "jdbc:mysql://39.108.231.15:3306/scnu_alumni_gz";
         //用户名
-        String userName="craddock";
+        String userName="root";
         //密码
-        String password="guochang";
+        String password="newttl!@#$1234";
 		//加载驱动
         try {
 			Class.forName(driver);
@@ -65,24 +66,6 @@ public class DataBaseUtil {
 			logger.error("====链接数据库【失败】====");
 			logger.error(e.toString());
 		}
-		
-        
-        /*连接SQL server
-	    try {
-			Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-		} catch (ClassNotFoundException e) {
-			System.out.print("DataBaseUtil-ClassNotFoundException::"+"\n"+e.getLocalizedMessage());
-			e.printStackTrace();
-		}
-		try {
-			conn=DriverManager.getConnection("jdbc:odbc:Sqllgc","sa","sa123abc");
-			sql=conn.createStatement();
-		} catch (SQLException e) {
-			System.out.print("DataBaseUtil-SQLException::"+"\n"+e.getLocalizedMessage());
-			e.printStackTrace();
-		}
-		*/
-		
 		
 	}
 	

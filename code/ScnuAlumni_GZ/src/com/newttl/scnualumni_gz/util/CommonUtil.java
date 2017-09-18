@@ -139,6 +139,7 @@ public class CommonUtil {
 			} catch (JSONException  e) {
 				token = null;
 				logger.error("====获取凭证Token【失败】====");
+				logger.error(jsonObject.toString());
 				logger.error(e.toString());
 			}
 		}

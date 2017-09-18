@@ -15,6 +15,7 @@ import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
 import com.newttl.scnualumni_gz.service.ChatService;
 import com.newttl.scnualumni_gz.service.MessageService;
 import com.newttl.scnualumni_gz.util.SignUtil;
+import com.newttl.scnualumni_gz.weixin.MenuManager;
 
 /**
  * 建立公众号与微信服务器连接
@@ -32,9 +33,9 @@ public class WxServlet extends HttpServlet {
 	private static Logger logger=ScnuAlumniLogs.getLogger();
 	/**
 	 * Token可由开发者可以任意填写，用作生成签名（该Token会和接口URL中包含的Token进行比对，从而验证安全性）
-	 * 比如这里我将Token设置为lgc1
+	 * 比如这里我将Token设置为scnugz
 	 */
-	private final String TOKEN="lgc1";
+	private final String TOKEN="scnugz";
 	
 	
 	/**
@@ -49,11 +50,14 @@ public class WxServlet extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
 		resp.setCharacterEncoding("UTF-8");
 		
-		/*// 接收微信服务器发送请求时传递过来的4个参数 signature timestamp nonce echostr
-		String signature=req.getParameter("signature");//微信加密签名signature结合了开发者填写的token参数和请求中的timestamp参数、nonce参数
-		String timestamp=req.getParameter("timestamp");//时间戳
-		String nonce=req.getParameter("nonce");//随机数
-		String echostr=req.getParameter("echostr");//随机字符串
+		/*
+		// 接收微信服务器发送请求时传递过来的4个参数 signature timestamp nonce echostr
+		//微信加密签名signature结合了开发者填写的token参数和请求中的timestamp参数、nonce参数
+		String signature=req.getParameter("signature");
+		//时间戳
+		String timestamp=req.getParameter("timestamp");
+		//随机数
+		String nonce=req.getParameter("nonce");
 		
 		//排序 TOKEN timestamp nonce
 		String sortStr=SignUtil.sort(TOKEN, timestamp, nonce);
@@ -66,27 +70,27 @@ public class WxServlet extends HttpServlet {
 			
 			PrintWriter writer =resp.getWriter();
 			try {
-				String respXml= MessageService.processRequest(req);
+				String respXml=new MessageService().processRequest(req);
 				writer.write(respXml);
 				
-				System.out.println("公众号回复::"+"\n"+respXml);
+				logger.debug("公众号回复::"+"\n"+respXml);
 				
 			} catch (Exception e) {
-				
-				e.printStackTrace();
+				logger.error("====公众号回复消息【失败】====");
+				logger.error(e.toString());
 			}
 			
 			writer.close();
 			writer=null;
+			logger.debug("====校验和处理消息【成功】!====");
 		} else {
-			System.out.println("校验失败。");
-		}*/
-		
-		
+			logger.debug("====校验【失败】！！！====");
+		}
+		*/
 		
 		PrintWriter writer =resp.getWriter();
 		try {
-			String respXml= MessageService.processRequest(req);
+			String respXml= new MessageService().processRequest(req);
 			writer.write(respXml);
 			
 			logger.debug("公众号回复::"+"\n"+respXml);
@@ -117,8 +121,8 @@ public class WxServlet extends HttpServlet {
 		
 		String signUp="";
 		signUp=req.getParameter("signUp");
-		ScnuAlumniLogs.getLogger().debug("signUp::"+signUp);
-		ScnuAlumniLogs.getLogger().debug("echostr::"+echostr);
+		logger.debug("signUp::"+signUp);
+		logger.debug("echostr::"+echostr);
 		
 		//排序 TOKEN timestamp nonce
 		String sortStr=SignUtil.sort(TOKEN, timestamp, nonce);
@@ -129,16 +133,17 @@ public class WxServlet extends HttpServlet {
 		//校验签名
 		PrintWriter writer =resp.getWriter();
 		if (mySignature != null && mySignature != "" && mySignature.equals(signature)) {
-          logger.debug("====校验【成功】!====");
           //如果检验成功输出echostr，微信服务器接收到此输出，才会确认检验完成。
           writer.write(echostr);
+          logger.debug("====校验【成功】!====");
 		} else {
           logger.debug("====校验【失败】！！！====");
 		}
 		
 		writer.close();
 		writer=null;
-		
+		//执行菜单
+		MenuManager.main(null);
 	}
 	/*
 	@Override

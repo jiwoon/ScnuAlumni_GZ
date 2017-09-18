@@ -16592,14 +16592,16 @@ $.rawCitiesData = [
       var currentCity;
       var currentDistrict;
       
-      if ("" != userAddr) {
+      if (userAddr != "") {
+    	  //用户修改信息时
     	  currentProvince = userAddr.split(" ")[0];
           currentCity = userAddr.split(" ")[1];
           currentDistrict= userAddr.split(" ")[2];
       }else {
-    	  currentProvince = provincesName[0];
-          currentCity = initCitiesName[0];
-          currentDistrict = initDistrictsName[0];
+    	  //用户首次注册时
+    	  currentProvince = '广东省';
+          currentCity = '广州市';
+          currentDistrict = '天河区';
       }
       
       /*

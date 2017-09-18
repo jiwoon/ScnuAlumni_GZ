@@ -1,5 +1,9 @@
 package com.newttl.scnualumni_gz.weixin;
 
+import java.io.File;
+
+import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
+
 /**
  * 微信公共类
  * 
@@ -10,33 +14,46 @@ package com.newttl.scnualumni_gz.weixin;
 public class WeiXinCommon {
 	
 	/**
+	 * 本地测试url http://jqfrudd.hk1.mofasuidao.cn
+	 * http://scnugz.hk1.mofasuidao.cn
+	 * 阿里云服务器  http://alumni.scnualumnigz.top
+	 * (以上域名需要加项目名) /ScnuAlumni_GZ/
+	 * 新浪云 http://scnugz.applinzi.com (不需要加项目名)
+	 */
+//	private static final String testUrl="http://scnugz.applinzi.com";
+	private static final String testUrl="http://scnugz.hk1.mofasuidao.cn/ScnuAlumni_GZ";
+	
+	/**
+	 * html资源
+	 */
+	public static final String htmlUrl="http://scnugz.hk1.mofasuidao.cn/html/nav/nav.html";
+	/**
 	 * 根目录
 	 */
-	public static final String projectUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/";
+	public static final String projectUrl=testUrl;
 	
 	
 	/***
 	 * URL 
-	 *
 	 * 新浪云  http://ntkwechat.applinzi.com ✔
 	 * ngrokcc  http://newtkwx.ngrok.cc ✔
 	 * ngrok.plub  http://newtkwx.ngrok.club
 	 * 魔法隧道  http://jqfrudd.hk1.mofasuidao.cn
 	 */
 	
-	public static final String WEIXIN_URL="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/WxServlet";
-	public static final String REDIRECT_URI="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/OAuthServlet";
+	public static final String WEIXIN_URL=testUrl+"/WxServlet";
+	public static final String REDIRECT_URI=testUrl+"/OAuthServlet";
 	public static final String OAUTH_URL="http://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 
 	/**
 	 * 活动中心网页授权
 	 */
-	public static final String activityUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/OAuthServlet";
+	public static final String activityUrl=testUrl+"/OAuthServlet";
 	
 	/**
 	 * 查找校友
 	 */
-	public static final String SchoolMateUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/findSchoolMate.jsp";
+	public static final String SchoolMateUrl=testUrl+"/findSchoolMate.jsp";
 	
 	/**
 	 * 公众号的  appID
@@ -60,7 +77,7 @@ public class WeiXinCommon {
 	/**
 	 * 获取本地服务器中的二维码的根目录
 	 */
-	public static final String qrCodeRoot="http://jqfrudd.hk1.mofasuidao.cn/WeiXinMedia/qrcodes/";
+	public static final String qrCodeRoot=testUrl+"/qrcodes/";
 	
 	/**
 	 * 百度地图获取周边的接口的Ak CA21bdecc75efc1664af5a195c30bb4e 
@@ -75,7 +92,7 @@ public class WeiXinCommon {
 	/**
 	 * 个人中心网页授权
 	 */
-	public static final String signUpUrl="http://jqfrudd.hk1.mofasuidao.cn/ScnuAlumni_GZ/SignUpServlet";
+	public static final String signUpUrl=testUrl+"/SignUpServlet";
 	
 	/**
 	 * 服务器中图片根目录
@@ -85,11 +102,30 @@ public class WeiXinCommon {
 	/**
 	 * 公众号二维码
 	 */
-	public static final String QrFileUrl="http://jqfrudd.hk1.mofasuidao.cn/image/SpecialQR.jpg";
+	public static final String QrFileUrl=testUrl+"/image/SpecialQR.jpg";
 	
 	/**
 	 * 活动图片路径
 	 */
-	public static final String activityImgUrl="http://jqfrudd.hk1.mofasuidao.cn/image/SpecialActivity.jpg";
+	public static final String activityImgUrl=testUrl+"/image/SpecialActivity.jpg";
+	
+	/**获取项目在服务器中的真实路径  
+	 * 在windows和linux系统下均可正常使用 
+	 * @return
+	 */
+    public static String getRootPath() {  
+        String classPath = WeiXinCommon.class.getClassLoader().getResource("/").getPath();  
+        String rootPath = "";  
+        if("\\".equals(File.separator)){//windows下  
+            rootPath = classPath.substring(1, classPath.indexOf("/WEB-INF/classes"));  
+            rootPath = rootPath.replace("/", "\\");  
+        }  
+        if("/".equals(File.separator)){//linux下  
+            rootPath = classPath.substring(0,classPath.indexOf("/WEB-INF/classes"));  
+            rootPath = rootPath.replace("\\", "/");  
+        }
+        ScnuAlumniLogs.getLogger().debug("rootPath::"+rootPath);
+        return rootPath;  
+    }  
 	
 }

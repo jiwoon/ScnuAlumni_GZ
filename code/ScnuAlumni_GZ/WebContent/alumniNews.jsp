@@ -12,13 +12,7 @@
 <%
 	String alumni=(String)request.getParameter("alumni");
 %>
-<p>
-功能：
-1、校友注册登记
-2、查看校友通讯录
-3、公众号二维码推荐邀请校友
-4、发起校友活动
-</p>
+
 <p><%=alumni %></p>
 </body>
 </html>

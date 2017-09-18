@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 
 import com.newttl.scnualumni_gz.bean.pojo.Token;
 import com.newttl.scnualumni_gz.bean.pojo.WeiXinGroups;
@@ -39,8 +40,9 @@ public class HelloWorld {
 		//上传图文消息的图片
 		String newsImageUrl="http://jqfrudd.hk1.mofasuidao.cn/image/InviteModel2.jpg";
 		AdvancedUtil advancedUtil=new AdvancedUtil();
+		
 		//清零api调用次数
-//		advancedUtil.getAdvancedMethod().clearQuota(access_token, appID);
+		advancedUtil.getAdvancedMethod().clearQuota(access_token, appID);
 		
 		
 //		WeiXinGroups group=advancedUtil.getAdvancedMethod().createGroup(access_token, "test912");
@@ -48,6 +50,7 @@ public class HelloWorld {
 //		advancedUtil.getAdvancedMethod().moveMemberGroup(access_token, "oA1HcvwuqMAZgdi6l8hdKV48OCJE", group.getId());
 //		String url=advancedUtil.getAdvancedMethod().uploadNewsImage(access_token, newsImageUrl).toString();
 		
+		/*=
 		//上传图文消息缩略图，获取其media_id
 		WeiXinMedia media=advancedUtil.getAdvancedMethod()
 							.uploadMedia(access_token, "image", "http://jqfrudd.hk1.mofasuidao.cn/image/haha.jpg");
@@ -85,7 +88,7 @@ public class HelloWorld {
 			String sendPreMsg = "{\"touser\":\"" + my_openId + "\",\"mpnews\":{\"media_id\":\"" + msgMediaId
 					+ "\"},\"msgtype\":\"mpnews\"}";
 			advancedUtil.getAdvancedMethod().massOpenIdpreview(sendPreMsg, access_token);
-			
+			=*/
 			
 			/*
 			//群发
@@ -131,10 +134,11 @@ public class HelloWorld {
 		ScnuAlumniLogs.getLogger().error(massJson);
 		*/
 		
+		/*
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		*/
 		
 	}
 	
