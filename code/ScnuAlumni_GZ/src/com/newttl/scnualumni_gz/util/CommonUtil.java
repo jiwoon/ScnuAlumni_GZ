@@ -120,31 +120,11 @@ public class CommonUtil {
 	
 	/**
 	 * 获取凭证Token
-	 * @param appID 第三方用户唯一凭证appID
-	 * @param appsecret 第三方用户唯一凭证密钥appsecret
 	 * @return
 	 */
-	public static Token getToken(String appID,String appsecret){
+	public static Token getToken(){
 		logger.debug("====获取凭证Token====");
-		Token token=null;
-		String requestUrl=token_url.replace("APPID", appID).replace("APPSECRET", appsecret);
-		//GET方法请求HTTPS，不提交数据
-		JSONObject jsonObject=httpsRequest(requestUrl, "GET", null);
-		if (jsonObject!=null) {
-			try {
-				token=new Token();
-				token.setAccess_token(jsonObject.getString("access_token"));
-				token.setExpires_in(jsonObject.getInt("expires_in"));
-				logger.debug("====获取凭证Token【成功】====");
-			} catch (JSONException  e) {
-				token = null;
-				logger.error("====获取凭证Token【失败】====");
-				logger.error(jsonObject.toString());
-				logger.error(e.toString());
-			}
-		}
-		
-		
+		Token token=TokenThread.mToken;
 		return token;
 		
 	}

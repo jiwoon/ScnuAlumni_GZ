@@ -33,7 +33,7 @@ public class HelloWorld {
 	public static void main(String[] args) {
 		
 		//获取接口凭证
-		Token token=CommonUtil.getToken(appID, appsecret);
+		Token token=CommonUtil.getToken();
 		String access_token=token.getAccess_token();
 		System.out.println("access_token::"+access_token);
 		

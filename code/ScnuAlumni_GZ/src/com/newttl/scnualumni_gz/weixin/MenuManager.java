@@ -91,7 +91,7 @@ public class MenuManager {
 		String appsecret=WeiXinCommon.appsecret;
 		
 		//通过凭证 appID appsecret获取 access_token
-		Token token=CommonUtil.getToken(appID, appsecret);
+		Token token=CommonUtil.getToken();
 		
 		if (token!=null) {
 			String accessToken=token.getAccess_token();

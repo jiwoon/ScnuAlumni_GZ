@@ -43,7 +43,7 @@
 		String content = aname + "/" + start_time + " - " + end_time + "/" + address + "/" + atip + "/" + awho;
 		
 		//通过凭证 appID appsecret获取 access_token
-		Token token=CommonUtil.getToken(WeiXinCommon.appID, WeiXinCommon.appsecret);
+		Token token=CommonUtil.getToken();
 		
 		// 发送客服文本消息
 		AdvancedUtil customMessage = new AdvancedUtil();

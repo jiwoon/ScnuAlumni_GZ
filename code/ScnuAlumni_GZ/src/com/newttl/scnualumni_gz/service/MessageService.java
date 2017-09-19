@@ -40,7 +40,7 @@ public class MessageService {
 	public MessageService(){
 		messageUtil=new MessageUtil();
 		//获取接口凭证
-		Token token=CommonUtil.getToken(WeiXinCommon.appID, WeiXinCommon.appsecret);
+		Token token=CommonUtil.getToken();
 		access_token=token.getAccess_token();
 	}
 	

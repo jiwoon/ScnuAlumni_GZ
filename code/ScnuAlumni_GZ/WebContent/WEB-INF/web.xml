@@ -4,6 +4,7 @@
   <welcome-file-list>
     <welcome-file>myIndex.jsp</welcome-file>
   </welcome-file-list>
+  
   <servlet>
     <servlet-name>OAuthServlet</servlet-name>
     <servlet-class>com.newttl.scnualumni_gz.servlet.OAuthServlet</servlet-class>
@@ -12,6 +13,7 @@
     <servlet-name>OAuthServlet</servlet-name>
     <url-pattern>/OAuthServlet</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <servlet-name>WxServlet</servlet-name>
     <servlet-class>com.newttl.scnualumni_gz.servlet.WxServlet</servlet-class>
@@ -20,6 +22,7 @@
     <servlet-name>WxServlet</servlet-name>
     <url-pattern>/WxServlet</url-pattern>
   </servlet-mapping>
+  
   <servlet>
   	<servlet-name>WeChatServlet</servlet-name>
   	<servlet-class>com.newttl.scnualumni_gz.servlet.WeChatServlet</servlet-class>
@@ -28,6 +31,7 @@
   	<servlet-name>WeChatServlet</servlet-name>
   	<url-pattern>/WeChatServlet</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <servlet-name>SignUpServlet</servlet-name>
     <servlet-class>com.newttl.scnualumni_gz.servlet.SignUpServlet</servlet-class>
@@ -36,6 +40,7 @@
     <servlet-name>SignUpServlet</servlet-name>
     <url-pattern>/SignUpServlet</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <servlet-name>ImageCodeServlet</servlet-name>
     <servlet-class>com.newttl.scnualumni_gz.servlet.ImageCodeServlet</servlet-class>
@@ -44,6 +49,7 @@
     <servlet-name>ImageCodeServlet</servlet-name>
     <url-pattern>/ImageCodeServlet</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <servlet-name>SendPosterServlet</servlet-name>
     <servlet-class>com.newttl.scnualumni_gz.servlet.SendPosterServlet</servlet-class>
@@ -52,6 +58,21 @@
     <servlet-name>SendPosterServlet</servlet-name>
     <url-pattern>/SendPosterServlet</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>AccessTokenServlet</servlet-name>
+  	<servlet-class>com.newttl.scnualumni_gz.servlet.AccessTokenServlet</servlet-class>
+  	<init-param>
+  		<param-name>appid</param-name>
+  		<param-value>wxdfead60d5e0dbcd6</param-value>
+	</init-param>
+	<init-param>
+		<param-name>appsecret</param-name>
+		<param-value>92663408c73b91e5749a0c5de20bd953</param-value>
+	</init-param>
+  	<load-on-startup>0</load-on-startup>
+  </servlet>
+  
   <servlet>
   	<servlet-name>ManagerLoginServlet</servlet-name>
   	<servlet-class>com.newttl.scnualumni_gz.servlet.ManagerLoginServlet</servlet-class>

@@ -1161,7 +1161,7 @@ public class AdvancedUtil {
 		public String getQRid(String user,String appID,String appSecret) throws Exception {
 			logger.debug("====获取二维码的media_id====");
 			
-			String accessToken = CommonUtil.getToken(appID, appSecret).getAccess_token();
+			String accessToken = CommonUtil.getToken().getAccess_token();
 			/**  
 			 * 获取用户信息，并将用户头像保存在本地
 			 */
