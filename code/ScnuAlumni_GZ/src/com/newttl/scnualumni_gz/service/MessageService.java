@@ -238,6 +238,8 @@ public class MessageService {
 				
 				switch (eventType) {
 				case MessageUtil.EVENT_TYPE_SUBSCRIBE://关注
+					
+					/*
 					//根据带参二维码中ticket判断新用户是否通过扫描他人推荐二维码进行的关注
 					String ticket = reqMap.get("Ticket");
 					//非空，说明是扫描推荐二维码进行的关注
@@ -269,7 +271,17 @@ public class MessageService {
 						qr.setTicket(ticket);
 						respXml = messageUtil.messageToXml(qr);
 					}
+					*/
 					
+					//查询判断用户是否已
+					DataBaseUtil subBaseUtil=new DataBaseUtil();
+					boolean signed= subBaseUtil.isSigned(req_fromUserName);
+					if (signed) {
+						//已注册,将用户拉入"已注册"组
+						AdvancedUtil advancedUtil=new AdvancedUtil();
+						boolean result=advancedUtil.getAdvancedMethod()
+								.moveMemberGroup(CommonUtil.getToken().getAccess_token(), req_fromUserName, 101);
+					}
 					// 新用户关注问候语
 					textMessage.setContent(getSubscribeMsg());
 					respXml=messageUtil.messageToXml(textMessage);
@@ -331,17 +343,17 @@ public class MessageService {
 		StringBuffer buffer=new StringBuffer();
 		buffer.append("终于等到你[玫瑰]大家都想你了[害羞]");
 		buffer.append("\n");
-		buffer.append("【菜单】功能");
 		buffer.append("\n");
-		buffer.append("【新闻】看母校新闻动态、官方微博");
+		buffer.append("【新闻】 看母校新闻动态");
 		buffer.append("\n");
-		buffer.append("【校友风采】查看校友的风采人生");
 		buffer.append("\n");
-		buffer.append("【基金会】查找校友互相联络[玫瑰]");
+		buffer.append("【校友风采】 查看校友的风采人生、查找我们昔日的校友[玫瑰]");
 		buffer.append("\n");
-		buffer.append("快点和昔日的同学联系吧！[拥抱]");
 		buffer.append("\n");
-		buffer.append("为了方便更多同学联系您，请先点击菜单栏【基金会】->【个人中心】进行注册~[愉快]");
+		buffer.append("【个人中心】 进行个人信息注册");
+		buffer.append("\n");
+		buffer.append("\n");
+		buffer.append("为给您提供更多功能和方便更多同学联系您,请进行【个人注册】吧~[玫瑰][愉快]");
 		return buffer.toString();
 	}
 	

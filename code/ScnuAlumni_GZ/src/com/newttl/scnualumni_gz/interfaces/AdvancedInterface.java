@@ -226,6 +226,14 @@ public interface AdvancedInterface {
 	WeiXinGroups createGroup(String accessToken,String groupName);
 	
 	/**
+	 * 删除指定 id 的分组
+	 * @param groupId 分组id
+	 * @param accessToken 接口凭证
+	 * @return true,成功|false,失败
+	 */
+	boolean deleteGroup(int groupId,String accessToken);
+	
+	/**
 	 * 修改指定 id 的分组的对应名称
 	 * @说明  需要 POST 数据 {"group":{"id":108,"name":"groupName"}}
 	 * 

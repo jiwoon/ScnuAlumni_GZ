@@ -22,6 +22,7 @@
 	Map map=new HashMap();
 	map.put("users", alumnus);
 	alumnusJson=JSONObject.fromObject(map);
+	
 %>
 
 <!DOCTYPE html>
@@ -112,12 +113,14 @@ function onSearch() {
 						var html0=bt('resultmodel',data);
 						//渲染
 						document.getElementById('result').innerHTML=html0;
+						searchClick();
 					});
 				}else{
 					//显示搜索到的校友(最简使用方法)
 					var html=bt('resultmodel',data);
 					//渲染
 					document.getElementById('result').innerHTML=html;
+					searchClick();
 				}
 			}
 		});
@@ -127,50 +130,46 @@ function onSearch() {
 	
 }
 
-function alumniClick(i) {
-	var formName="alumniform"+String.valueOf(i);
-	document.formName.submit();
-}
-
-function alumnus(i) {
-	var formName="alumnus"+String.valueOf(i);
-	document.formName.submit();
-}
-
-
 </script>
 
 <!-- 结果显示模板 -->
 <script id="resultmodel" type="text/html">
 
+<div id="mysearch">
 <!
 	
 		for(var i=0;i<users.length;i++){
 !>
-			<form action="alumniInfo.jsp" method="post" name="alumniform<!=i!>">
-			<div class="weui_cells weui_cells_form" style="margin-top: 0px">
+			<form action="alumniInfo.jsp" method="post" name="alumnus<!=i!>">
+			<div class="weui_cells weui_cells_access" style="margin-top: 0px">
 			
 			<div class="weui_cell">
-				<div class="inline">
+				<div class="inline weui_cell_bd weui_cell_primary">
 					<p><!=users[i].userName!></p>
 				</div>
-    			<div class="inline weui_cell_bd weui_cell_primary">
-					<button class="weui_input" onclick="alumniClick(i);" value="<!=users[i].userName!>"></button>
+				
+       			<div class="weui-cell_ft" style="height: 48px">
+					<img src="<!=users[i].headImgUrl!>" style="height: 40px;width: 40px">
 					<input type="hidden" name="alumniName" value="<!=users[i].userName!>">
- 					<input type="hidden" name="alumniOpenId" value=<!=users[i].openId!>>
-				</div>
-        		<div class="inline weui-cell_ft">
-         		    <img src="<!=users[i].headImgUrl!>" style="height: 40px;width: 40px">
-					<input type="hidden" name="alumniHeadImgUrl" value=<!=users[i].headImgUrl!>>
-       			</div>
+ 					<input type="hidden" name="alumniOpenId" value="<!=users[i].openId!>">
+ 					<input type="hidden" name="alumniHeadImgUrl" value="<!=users[i].headImgUrl!>">
+		 		</div>
+       			
     		</div>
+    		
+    		
 			</div>
+			
+			
 			</form>
 <!
 		}
 !>
+</div>
 
 </script>
+
+
 
 </head>
 <body style="height: 100%">
@@ -185,7 +184,7 @@ function alumnus(i) {
 <div class="weui_cells weui_cells_access"  style="margin-top: 0px;">
  	<div class="weui_cell">
  		<div class="weui_cell_bd weui_cell_primary">
-	   		<input class="weui_input" type="text" id="autoComplete" placeholder="输入校友名字" onkeyup="value=value.replace(/\s/g,'')">
+	   		<input class="weui_input" type="text" id="autoComplete" placeholder="输入校友名字" onkeyup="widthCheck(this, 32);value=value.replace(/\s/g,'');">
 	   	</div>
  		
  		<div class="weui-cell_ft">
@@ -196,47 +195,91 @@ function alumnus(i) {
 </div>
 
 <div id="result">
-
+<div id="first">
 <%
 	if(alumnus.size() > 0){
 		for(int i=0;i < alumnus.size();i++){
 			
 %>
 			<form action="alumniInfo.jsp" method="post" name="alumnus<%=i%>">
-			<div class="weui_cells weui_cells_form" style="margin-top: 0px">
+			<div class="weui_cells weui_cells_access" style="margin-top: 0px">
 			
 			<div class="weui_cell">
-				<div class="inline">
+				<div class="inline weui_cell_bd weui_cell_primary">
 					<p><%=alumnus.get(i).getUserName()%></p>
 				</div>
-    			<div class="inline weui_cell_bd weui_cell_primary">
-					<button class="weui_input" onclick="alumnus(i);" value="<%=alumnus.get(i).getUserName()%>"></button>
+				
+       			<div class="weui-cell_ft" style="height: 48px">
+					<img src="<%=alumnus.get(i).getHeadImgUrl()%>" style="height: 40px;width: 40px">
 					<input type="hidden" name="alumniName" value="<%=alumnus.get(i).getUserName()%>">
  					<input type="hidden" name="alumniOpenId" value="<%=alumnus.get(i).getOpenId()%>">
-				</div>
-        		<div class="inline weui-cell_ft">
-         		    <img src="<%=alumnus.get(i).getHeadImgUrl()%>" style="height: 40px;width: 40px">
-					<input type="hidden" name="alumniHeadImgUrl" value="<%=alumnus.get(i).getHeadImgUrl()%>">
-       			</div>
+ 					<input type="hidden" name="alumniHeadImgUrl" value="<%=alumnus.get(i).getHeadImgUrl()%>">
+		 		</div>
+       			
     		</div>
+    		
+    		
 			</div>
+			
+			
 			</form>
 <%		
 		}
 	}
 %>
 
-</div>	
+</div>
+
+<script>
+		var box = document.getElementById("first");
+		var divs = box.children;
+		for (var k = 0; k < divs.length; k++) {
+			divs[k].index = k;
+			divs[k].onclick = function(){
+				this.submit();
+			}
+		}
+</script>
 
 </div>
-<!-- 
-<script src="resources/js/fastclick.js"></script>
+ 
+</div>
+
 <script>
-  $(function() {
-    FastClick.attach(document.body);
-  });
+function searchClick() {
+	var box = document.getElementById("mysearch");
+	var divs = box.children;
+	for (var k = 0; k < divs.length; k++) {
+		divs[k].index = k;
+		divs[k].onclick = function(){
+			this.submit();
+		}
+	}
+}
+
+//限制输入框字节数
+function widthCheck(str,maxlen) {
+	var width=0;
+	//获取字符数(不区分英汉)
+	for (var i = 0; i < str.value.length; i++) {
+		//遍历获取某个字符的编码
+		var code=str.value.charCodeAt(i);
+		
+		if ((code >= 0x0001 && code <= 0x007e) || (0xff60<=code && code<=0xff9f)) {
+			//单字节的加1
+			width++;
+		}else {
+			//双字节的加2
+			width+=2;
+		}
+		if (width > maxlen) {
+			str.value=str.value.substr(0,i);
+			break;
+		}
+	}
+}
 </script>
- -->
+
 <br>
 <div class="weui-footer foot">
 	<p class="weui-footer__links">

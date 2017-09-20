@@ -335,14 +335,14 @@ SignedUser signedUser=dataBaseUtil.getSigned(openID);
     <div class="weui_cell">
     	<div class="weui_cell_hd"><label class="weui-label">班级<span style='color: red;position: relative;top: 2px'>*</span></label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            <input class="weui_input" type="text" name="userClass" placeholder="请输入班级" value="<%=signedUser.getUserClass() %>">
+            <input class="weui_input" type="text" name="userClass" placeholder="请输入班级" value="<%=signedUser.getUserClass() %>" onkeyup="widthCheck(this, 32);">
         </div>
     </div>
 	
 	<div class="weui_cell">
     	<div class="weui_cell_hd"><label class="weui-label">姓名<span style='color: red;position: relative;top: 2px'>*</span></label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            <input class="weui_input" type="text" name="userName" placeholder="请输入姓名" value="<%=signedUser.getUserName() %>" onkeyup="value=value.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,''))">
+            <input class="weui_input" type="text" name="userName" placeholder="请输入姓名" value="<%=signedUser.getUserName() %>" onkeyup="value=value.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,'');widthCheck(this, 32);" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,''))">
         </div>
     </div>
     
@@ -439,21 +439,21 @@ SignedUser signedUser=dataBaseUtil.getSigned(openID);
 	<div class="weui_cell">
 	   	<div class="weui_cell_hd"><label class="weui-label">行业</label></div>
 	    <div class="weui_cell_bd weui_cell_primary">
-	        <input class="weui_input" type="text" name="userIndustry" placeholder="请输入行业" value="<%=signedUser.getIndustry() %>">
+	        <input class="weui_input" type="text" name="userIndustry" placeholder="请输入行业" value="<%=signedUser.getIndustry() %>" onkeyup="widthCheck(this, 32);">
 	    </div>
 	</div>
 	
 	<div class="weui_cell">
 	   	<div class="weui_cell_hd"><label class="weui-label">爱好</label></div>
 	    <div class="weui_cell_bd weui_cell_primary">
-	        <input class="weui_input" type="text" name="userHobby" placeholder="请输入爱好" value="<%=signedUser.getHobby() %>">
+	        <input class="weui_input" type="text" name="userHobby" placeholder="请输入爱好" value="<%=signedUser.getHobby() %>" onkeyup="widthCheck(this, 32);">
 	    </div>
 	</div>
 	
 	<div class="weui_cell">
 	   	<div class="weui_cell_hd"><label class="weui-label">职业</label></div>
 	    <div class="weui_cell_bd weui_cell_primary">
-	        <input class="weui_input" type="text" name="userProfession" placeholder="请输入职业" value="<%=signedUser.getProfession() %>">
+	        <input class="weui_input" type="text" name="userProfession" placeholder="请输入职业" value="<%=signedUser.getProfession() %>" onkeyup="widthCheck(this, 32);">
 	    </div>
 	</div>
 	
@@ -492,6 +492,28 @@ SignedUser signedUser=dataBaseUtil.getSigned(openID);
          });
        });
  	
+ 	//限制输入框字节数
+  	function widthCheck(str,maxlen) {
+  		var width=0;
+  		//获取字符数(不区分英汉)
+  		for (var i = 0; i < str.value.length; i++) {
+  			//遍历获取某个字符的编码
+  			var code=str.value.charCodeAt(i);
+  			
+  			if ((code >= 0x0001 && code <= 0x007e) || (0xff60<=code && code<=0xff9f)) {
+  				//单字节的加1
+  				width++;
+  			}else {
+  				//双字节的加2
+  				width+=2;
+  			}
+  			if (width > maxlen) {
+  				str.value=str.value.substr(0,i);
+  				break;
+  			}
+  		}
+  	}
+ 	 
 </script>
 
 <div class="weui-footer ">

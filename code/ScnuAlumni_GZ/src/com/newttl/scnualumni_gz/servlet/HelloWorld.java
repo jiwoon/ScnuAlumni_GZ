@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.List;
 
 import com.newttl.scnualumni_gz.bean.pojo.Token;
 import com.newttl.scnualumni_gz.bean.pojo.WeiXinGroups;
@@ -14,6 +15,8 @@ import com.newttl.scnualumni_gz.bean.pojo.WeiXinMedia;
 import com.newttl.scnualumni_gz.logs.ScnuAlumniLogs;
 import com.newttl.scnualumni_gz.util.AdvancedUtil;
 import com.newttl.scnualumni_gz.util.CommonUtil;
+import com.newttl.scnualumni_gz.util.MenuUtil;
+import com.newttl.scnualumni_gz.weixin.MenuManager;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -33,17 +36,44 @@ public class HelloWorld {
 	public static void main(String[] args) {
 		
 		//获取接口凭证
-		Token token=CommonUtil.getToken();
+		/*Token token=CommonUtil.getToken();
 		String access_token=token.getAccess_token();
-		System.out.println("access_token::"+access_token);
+		System.out.println("access_token::"+access_token);*/
+		String[] openId={"oA1Hcv2fXE1FIMP-K03aToGybTlQ",
+						 "oA1Hcv2lXIZoFE0D2pvj5lxeWSy4",
+						 "oA1Hcv1RnYjtQbiL4Zbgs-wJbgWQ",
+						 "oA1Hcv8DFwYQWkjhxvfx4RI7f4XU",
+						 "oA1Hcv_i6rrxtOJ47Naeu8x2U2nk",
+						 "oA1HcvzeLhrzXYLXltoDf1ckrxMg",
+						 "oA1HcvxAiB6JivaKMOCQSvnkzG28",
+						 "oA1Hcv2CzSIz990jGfKxTfWJ4peY"};
 		
+		AdvancedUtil advancedUtil=new AdvancedUtil();
+		String accessToken="SA5ajikfsz2wN0Ksm2hpBt_QhtvLCg5p0Z3rWwqckEOsOjaM1RGElKhqAvwKcC_lyBJwxFFFtPcCKQTwvThUEeJSZ6U_VEU77R7G3dCJYEgAvE1ZbUmD10X1YQ7NDJuYHAMiAGAXQC";
+		/*for (String string : openId) {
+			advancedUtil.getAdvancedMethod().moveMemberGroup(accessToken, string, 101);
+		}
+		*/
+//		MenuUtil.deleteMenu(accessToken);
+//		MenuUtil.getMenu(accessToken);
+		
+		
+		/*boolean result=advancedUtil.getAdvancedMethod().updateGroup(access_token, 101, "已注册");*/
+		
+		
+		List<WeiXinGroups> groups=advancedUtil.getAdvancedMethod().getWeiXinGroups(accessToken);
+		for (WeiXinGroups weiXinGroups : groups) {
+			System.out.println(weiXinGroups.getWeiXinGroups());
+		}
+		
+		/*
 		//上传图文消息的图片
 		String newsImageUrl="http://jqfrudd.hk1.mofasuidao.cn/image/InviteModel2.jpg";
 		AdvancedUtil advancedUtil=new AdvancedUtil();
 		
 		//清零api调用次数
 		advancedUtil.getAdvancedMethod().clearQuota(access_token, appID);
-		
+		*/
 		
 //		WeiXinGroups group=advancedUtil.getAdvancedMethod().createGroup(access_token, "test912");
 //		advancedUtil.getAdvancedMethod().moveMemberGroup(access_token, "oA1Hcv9PfGShFQfsHXEdjQrPGPmQ", group.getId());
@@ -139,7 +169,10 @@ public class HelloWorld {
 			e.printStackTrace();
 		}
 		*/
-		
+		/*
+		String[] type={"101"};
+		MenuManager.main(type);
+		*/
 	}
 	
 }

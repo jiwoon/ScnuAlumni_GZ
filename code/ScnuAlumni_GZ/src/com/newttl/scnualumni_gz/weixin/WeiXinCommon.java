@@ -19,14 +19,16 @@ public class WeiXinCommon {
 	 * 阿里云服务器  http://alumni.scnualumnigz.top
 	 * (以上域名需要加项目名) /ScnuAlumni_GZ/
 	 * 新浪云 http://scnugz.applinzi.com (不需要加项目名)
+	 * 
+	 * 已备案域名  http://wx.jimi-iot.com
 	 */
 //	private static final String testUrl="http://scnugz.applinzi.com";
-	private static final String testUrl="http://scnugz.hk1.mofasuidao.cn/ScnuAlumni_GZ";
+	private static final String testUrl="http://wx.jimi-iot.com/ScnuAlumni_GZ";
 	
 	/**
 	 * html资源
 	 */
-	public static final String htmlUrl="http://scnugz.hk1.mofasuidao.cn/html/nav/nav.html";
+	public static final String htmlUrl="http://wx.jimi-iot.com/html/nav/nav.html";
 	/**
 	 * 根目录
 	 */

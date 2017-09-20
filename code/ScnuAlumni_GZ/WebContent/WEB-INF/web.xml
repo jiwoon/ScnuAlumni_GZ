@@ -70,7 +70,7 @@
 		<param-name>appsecret</param-name>
 		<param-value>92663408c73b91e5749a0c5de20bd953</param-value>
 	</init-param>
-  	<load-on-startup>0</load-on-startup>
+  	<!-- <load-on-startup>0</load-on-startup> -->
   </servlet>
   
   <servlet>

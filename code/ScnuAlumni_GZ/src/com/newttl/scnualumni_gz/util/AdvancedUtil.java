@@ -655,7 +655,8 @@ public class AdvancedUtil {
 		public List<WeiXinGroups> getWeiXinGroups(String accessToken){
 			logger.debug("====获取用户分组信息====");
 			List<WeiXinGroups> groups=null;
-			//拼接请求网址
+			//拼接请求网址 https://api.weixin.qq.com/cgi-bin/tags/get?access_token=ACCESS_TOKEN
+			//或者https://api.weixin.qq.com/cgi-bin/groups/get?access_token=ACCESS_TOKEN
 			String requestUrl="https://api.weixin.qq.com/cgi-bin/groups/get?access_token=ACCESS_TOKEN";
 			requestUrl=requestUrl.replace("ACCESS_TOKEN", accessToken);
 			//发起请求
@@ -664,6 +665,7 @@ public class AdvancedUtil {
 				try {
 					groups=JSONArray.toList(jsonObject.getJSONArray("groups"),WeiXinGroups.class);
 					logger.debug("====获取用户分组信息【成功】====");
+					logger.debug(jsonObject.toString());
 				} catch (Exception e) {
 					groups=null;
 					logger.error("====获取用户分组信息【失败】====");
@@ -686,7 +688,7 @@ public class AdvancedUtil {
 		public WeiXinGroups createGroup(String accessToken,String groupName){
 			logger.debug("====创建分组====");
 			WeiXinGroups groups=null;
-			//拼接请求网址
+			//拼接请求网址                           https://api.weixin.qq.com/cgi-bin/tags/create?access_token=ACCESS_TOKEN
 			String requestUrl = "https://api.weixin.qq.com/cgi-bin/groups/create?access_token=ACCESS_TOKEN";
 			requestUrl=requestUrl.replace("ACCESS_TOKEN", accessToken);
 			//需要提交的数据
@@ -711,6 +713,39 @@ public class AdvancedUtil {
 		}
 		
 		/**
+		 * 删除指定 id 的分组
+		 * @param groupId 分组id
+		 * @param accessToken 接口凭证
+		 * @return true,成功|false,失败
+		 */
+		@Override
+		public boolean deleteGroup(int groupId,String accessToken){
+			logger.debug("====删除指定 id 的分组====");
+			boolean result=false;
+			//请求网址 https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=ACCESS_TOKEN
+			String requestUrl="https://api.weixin.qq.com/cgi-bin/groups/delete?access_token=ACCESS_TOKEN";
+			requestUrl=requestUrl.replace("ACCESS_TOKEN", accessToken);
+			//post数据
+			String jsonData="{\"group\":{\"id\" : %d}}";
+			jsonData=String.format(jsonData, groupId);
+			//发起请求
+			JSONObject jsonObject=CommonUtil.httpsRequest(requestUrl, "POST", jsonData);
+			if (jsonObject != null) {
+				int errcode=jsonObject.getInt("errcode");
+				String errmsg=jsonObject.getString("errmsg");
+				if (errcode == 0) {
+					result=true;
+					logger.debug("====删除指定 id 的分组【成功】====");
+				}else {
+					result=false;
+					logger.error("====删除指定 id 的分组【失败】====");
+				}
+			}
+			logger.debug(jsonObject.toString());
+			return result;
+		}
+		
+		/**
 		 * 修改指定 id 的分组的对应名称
 		 * @说明  需要 POST 数据 {"group":{"id":108,"name":"groupName"}}
 		 * 
@@ -723,7 +758,7 @@ public class AdvancedUtil {
 		public boolean updateGroup(String accessToken,int groupId,String groupName){
 			logger.debug("====修改指定 id 的分组的对应名称====");
 			boolean result=false;
-			//拼接请求网址
+			//拼接请求网址                           https://api.weixin.qq.com/cgi-bin/tags/update?access_token=ACCESS_TOKEN
 			String requestUrl = "https://api.weixin.qq.com/cgi-bin/groups/update?access_token=ACCESS_TOKEN";
 			requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken);
 			// 需要 POST 的json数据
@@ -782,6 +817,12 @@ public class AdvancedUtil {
 			}
 			return result;
 		}
+		
+		//创建个性化菜单
+		//https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token=ACCESS_TOKEN
+		/*public String createPersonalMenu(){
+			
+		}*/
 		
 		/**
 		 * 从微信服务器上下载对应 mediaId 的媒体文件

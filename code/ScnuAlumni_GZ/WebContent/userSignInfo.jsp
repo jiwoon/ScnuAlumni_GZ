@@ -1,3 +1,5 @@
+<%@page import="com.newttl.scnualumni_gz.util.CommonUtil"%>
+<%@page import="com.newttl.scnualumni_gz.util.AdvancedUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@page import="com.newttl.scnualumni_gz.bean.database.SignedUser" %>
@@ -81,6 +83,16 @@ if(!"".equals(userOpenId)){
 		if(!sigUped){
 			DataBaseUtil dataBaseUtil=new DataBaseUtil();
 			dataBaseUtil.saveSignedUser(signedUser);
+			//保存用户注册信息后，将用户拉到"已注册分组"
+			AdvancedUtil advancedUtil=new AdvancedUtil();
+			boolean result=advancedUtil.getAdvancedMethod()
+					.moveMemberGroup(CommonUtil.getToken().getAccess_token(), userOpenId, 101);
+			// 发送客服文本消息
+			AdvancedUtil customMessage = new AdvancedUtil();
+			String contentMsg="您已成功注册[玫瑰]\n请到菜单->【基金会】->【个人中心】查看您的个人信息吧[愉快]\n\n若未出现【基金会】菜单,请您退出公众号几分钟再进来[玫瑰]";
+			String jsonTextMsg = customMessage.getAdvancedMethod()
+					.makeTextCustomMessage(userOpenId, contentMsg);
+			customMessage.getAdvancedMethod().sendCustomMessage(CommonUtil.getToken().getAccess_token(), jsonTextMsg);
 		}
 	}
 	//用户修改信息,更新用户信息
