@@ -73,7 +73,7 @@ public class SignUpServlet extends HttpServlet {
 				//设置要传递的信息 ,将用户信息放到 request 对象中，这样可以传递到目标页面,
 				req.setAttribute("snsUserInfo", snsUserInfo);
 				//跳转到目标页面
-				req.getRequestDispatcher("signUp.jsp").forward(req, resp);
+				req.getRequestDispatcher("/WEB-INF/pages/signUp.jsp").forward(req, resp);
 				logger.debug("授权【成功】");
 			}else {
 				//将未获取到授权的信息传递到目标页面
@@ -82,6 +82,7 @@ public class SignUpServlet extends HttpServlet {
 				//跳转到目标页面
 				req.getRequestDispatcher("myIndex.jsp").forward(req, resp);
 				logger.error("【未授权】");
+				
 			}
 		}
 	}

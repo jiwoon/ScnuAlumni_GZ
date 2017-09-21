@@ -142,7 +142,7 @@
 
     <div class="weui-footer">
         <p class="weui-footer__links">
-          <a href="#" class="weui-footer__link">华师校友通讯录</a>
+          <a href="#" class="weui-footer__link">华南师大校友会</a>
         </p>
         <p class="weui-footer__text">Copyright © 2017 SCNU</p>
       </div> <br /> 

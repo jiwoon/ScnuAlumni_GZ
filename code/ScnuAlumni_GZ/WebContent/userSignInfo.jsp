@@ -1,4 +1,5 @@
 <%@page import="com.newttl.scnualumni_gz.util.CommonUtil"%>
+<%@page import="com.newttl.scnualumni_gz.weixin.WeiXinCommon"%>
 <%@page import="com.newttl.scnualumni_gz.util.AdvancedUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -89,7 +90,7 @@ if(!"".equals(userOpenId)){
 					.moveMemberGroup(CommonUtil.getToken().getAccess_token(), userOpenId, 101);
 			// 发送客服文本消息
 			AdvancedUtil customMessage = new AdvancedUtil();
-			String contentMsg="您已成功注册[玫瑰]\n请到菜单->【基金会】->【个人中心】查看您的个人信息吧[愉快]\n\n若未出现【基金会】菜单,请您退出公众号几分钟再进来[玫瑰]";
+			String contentMsg="\n您已成功注册[玫瑰]\n请到菜单【基金会】->【个人中心】查看您的个人信息吧[愉快]\n\n若未出现【基金会】菜单,请您退出公众号稍后再进来[玫瑰]\n";
 			String jsonTextMsg = customMessage.getAdvancedMethod()
 					.makeTextCustomMessage(userOpenId, contentMsg);
 			customMessage.getAdvancedMethod().sendCustomMessage(CommonUtil.getToken().getAccess_token(), jsonTextMsg);
@@ -113,17 +114,17 @@ if("1".equals(contactType)){
 
 %>
 
-<form action="userEdit.jsp?openId=<%=userOpenId %>" method="post">
+<form action="UserEditServlet" method="post">
 <div class="page__bd">
  <div class="weui_cells weui_cells_access" style="margin-top: 0px">
  	<div class="weui_cell">
  		<div class="weui_cell_bd weui_cell_primary" style="height: 48px">
  			<p class="p">头像</p>
+ 			<input type="hidden" name="openId" value=<%=userOpenId %>>
  		</div>
  		<div class="weui-cell_ft" style="height: 48px">
  			<img src="<%=userHeadImgUrl %>" style="height: 45px;width: 45px">
  			<input type="hidden" name="editHeadImgUrl" value=<%=userHeadImgUrl %>>
- 			<input type="hidden" name="userOpenId" value=<%=userOpenId %>>
  		</div>
  	</div>
  </div>	
@@ -218,7 +219,6 @@ if("1".equals(contactType)){
 
 
 <div class="weui_btn_area">
-    <!-- <a class="weui_btn weui_btn_primary" href="http://newtkwx.ngrok.cc/WeChat/userSignInfo.jsp?tell='5566'" id="showTooltips">确定</a> -->
     <input class="weui_btn weui_btn_primary" type="submit" name="edit" value="修改">
 </div>
 <br>
@@ -229,7 +229,7 @@ if("1".equals(contactType)){
 
 <div class="weui-footer ">
 	<p class="weui-footer__links">
-		<a href="#" class="weui-footer__link">华师校友通讯录</a>
+		<a href="#" class="weui-footer__link">华南师大校友会</a>
 	</p>
 	<p class="weui-footer__text">Copyright © 2017 SCNU</p>
 </div>

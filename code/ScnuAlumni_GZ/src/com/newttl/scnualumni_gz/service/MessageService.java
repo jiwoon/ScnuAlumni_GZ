@@ -283,8 +283,9 @@ public class MessageService {
 								.moveMemberGroup(CommonUtil.getToken().getAccess_token(), req_fromUserName, 101);
 					}
 					// 新用户关注问候语
-					textMessage.setContent(getSubscribeMsg());
+					textMessage.setContent(getSubMsg(signed));
 					respXml=messageUtil.messageToXml(textMessage);
+					
 					break;
 					
 				case MessageUtil.EVENT_TYPE_UNSUBSCRIBE://取消关注
@@ -339,21 +340,40 @@ public class MessageService {
 	 * 关注语提示
 	 * @return 关注语
 	 */
-	private static String getSubscribeMsg(){
+	private static String getSubMsg(boolean signed){
 		StringBuffer buffer=new StringBuffer();
-		buffer.append("终于等到你[玫瑰]大家都想你了[害羞]");
-		buffer.append("\n");
-		buffer.append("\n");
-		buffer.append("【新闻】 看母校新闻动态");
-		buffer.append("\n");
-		buffer.append("\n");
-		buffer.append("【校友风采】 查看校友的风采人生、查找我们昔日的校友[玫瑰]");
-		buffer.append("\n");
-		buffer.append("\n");
-		buffer.append("【个人中心】 进行个人信息注册");
-		buffer.append("\n");
-		buffer.append("\n");
-		buffer.append("为给您提供更多功能和方便更多同学联系您,请进行【个人注册】吧~[玫瑰][愉快]");
+		if (!signed) {
+			//未注册
+			buffer.append("\n");
+			buffer.append("终于等到你[玫瑰]大家都想你了[害羞]");
+			buffer.append("\n");
+			buffer.append("\n");
+			buffer.append("【新闻】 看母校新闻动态");
+			buffer.append("\n");
+			buffer.append("\n");
+			buffer.append("【校友风采】 查看校友的风采人生、查找我们昔日的校友[玫瑰]");
+			buffer.append("\n");
+			buffer.append("\n");
+			buffer.append("【个人注册】 进行个人信息注册");
+			buffer.append("\n");
+			buffer.append("\n");
+			buffer.append("为给您提供更多功能和方便更多同学联系您,\n请进行【个人注册】吧~[玫瑰][愉快]");
+			buffer.append("\n");
+		}else {
+			//已注册
+			buffer.append("\n");
+			buffer.append("终于等到你[玫瑰]大家都想你了[害羞]");
+			buffer.append("\n");
+			buffer.append("\n");
+			buffer.append("【新闻】 看母校新闻动态");
+			buffer.append("\n");
+			buffer.append("\n");
+			buffer.append("【校友风采】 查看校友的风采人生、查找我们昔日的校友[玫瑰]");
+			buffer.append("\n");
+			buffer.append("\n");
+			buffer.append("【基金会】 进行个人信息查看和修改");
+			buffer.append("\n");
+		}
 		return buffer.toString();
 	}
 	

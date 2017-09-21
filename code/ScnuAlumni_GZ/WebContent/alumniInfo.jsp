@@ -36,9 +36,8 @@
 <body>
 
 <%
-	String alumniName=request.getParameter("alumniName");
-	String alumniOpenId=request.getParameter("alumniOpenId");
-	String alumniHeadImgUrl=request.getParameter("alumniHeadImgUrl");
+	
+	String alumniOpenId=request.getParameter("alumni");
 	String contactType="";
 	DataBaseUtil baseUtil=new DataBaseUtil();
 	SignedUser signedUser=baseUtil.getSigned(alumniOpenId);
@@ -55,7 +54,7 @@
 %>
 
 <script type="text/javascript">
-	document.title="<%=alumniName%>个人信息";
+	document.title="<%=signedUser.getUserName()%>个人信息";
 </script>
 
 <form name="formInfo" style="height: 100%">
@@ -63,7 +62,7 @@
  <div class="weui_cells weui_cells_access"  style="margin-top: 0px">
  	<div class="weui_cell">
  		<div class="weui_cell_bd weui_cell_primary" style="height: 48px">
- 			<p class="p"><%=alumniName%></p>
+ 			<p class="p"><%=signedUser.getUserName()%></p>
  		</div>
  		<div class="weui-cell_ft" style="height: 48px">
  			<img src="<%=signedUser.getHeadImgUrl() %>" style="height: 45px;width: 45px">
@@ -149,7 +148,7 @@
 <br>
 <div class="weui-footer">
 	<p class="weui-footer__links">
-		<a href="#" class="weui-footer__link">华师校友通讯录</a>
+		<a href="#" class="weui-footer__link">华南师大校友会</a>
 	</p>
 	<p class="weui-footer__text">Copyright © 2017 SCNU</p>
 </div>

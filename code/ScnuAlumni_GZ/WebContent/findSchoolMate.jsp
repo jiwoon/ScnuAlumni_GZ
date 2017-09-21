@@ -12,10 +12,6 @@
 %>
 <%
 	request.setCharacterEncoding("UTF-8");
-/* 
-	String path=request.getContextPath();
-	String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-	 */
 	List<Alumnus> alumnus=new ArrayList<Alumnus>();
 	DataBaseUtil baseUtil=new DataBaseUtil();
 	alumnus=baseUtil.getAllAlumnus();
@@ -140,7 +136,7 @@ function onSearch() {
 	
 		for(var i=0;i<users.length;i++){
 !>
-			<form action="alumniInfo.jsp" method="post" name="alumnus<!=i!>">
+			<form action="alumniInfo.jsp?alumni=<!=users[i].openId!>" method="post">
 			<div class="weui_cells weui_cells_access" style="margin-top: 0px">
 			
 			<div class="weui_cell">
@@ -150,9 +146,6 @@ function onSearch() {
 				
        			<div class="weui-cell_ft" style="height: 48px">
 					<img src="<!=users[i].headImgUrl!>" style="height: 40px;width: 40px">
-					<input type="hidden" name="alumniName" value="<!=users[i].userName!>">
- 					<input type="hidden" name="alumniOpenId" value="<!=users[i].openId!>">
- 					<input type="hidden" name="alumniHeadImgUrl" value="<!=users[i].headImgUrl!>">
 		 		</div>
        			
     		</div>
@@ -201,7 +194,7 @@ function onSearch() {
 		for(int i=0;i < alumnus.size();i++){
 			
 %>
-			<form action="alumniInfo.jsp" method="post" name="alumnus<%=i%>">
+			<form action="alumniInfo.jsp?alumni=<%=alumnus.get(i).getOpenId() %>" method="post">
 			<div class="weui_cells weui_cells_access" style="margin-top: 0px">
 			
 			<div class="weui_cell">
@@ -211,13 +204,9 @@ function onSearch() {
 				
        			<div class="weui-cell_ft" style="height: 48px">
 					<img src="<%=alumnus.get(i).getHeadImgUrl()%>" style="height: 40px;width: 40px">
-					<input type="hidden" name="alumniName" value="<%=alumnus.get(i).getUserName()%>">
- 					<input type="hidden" name="alumniOpenId" value="<%=alumnus.get(i).getOpenId()%>">
- 					<input type="hidden" name="alumniHeadImgUrl" value="<%=alumnus.get(i).getHeadImgUrl()%>">
 		 		</div>
        			
     		</div>
-    		
     		
 			</div>
 			
@@ -283,7 +272,7 @@ function widthCheck(str,maxlen) {
 <br>
 <div class="weui-footer foot">
 	<p class="weui-footer__links">
-		<a href="#" class="weui-footer__link">华师校友通讯录</a>
+		<a href="#" class="weui-footer__link">华南师大校友会</a>
 	</p>
 	<p class="weui-footer__text">Copyright © 2017 SCNU</p>
 </div>

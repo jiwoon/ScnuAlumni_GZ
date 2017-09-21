@@ -42,6 +42,15 @@
   </servlet-mapping>
   
   <servlet>
+  	<servlet-name>UserEditServlet</servlet-name>
+  	<servlet-class>com.newttl.scnualumni_gz.servlet.UserEditServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserEditServlet</servlet-name>
+    <url-pattern>/UserEditServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <servlet-name>ImageCodeServlet</servlet-name>
     <servlet-class>com.newttl.scnualumni_gz.servlet.ImageCodeServlet</servlet-class>
   </servlet>
@@ -70,7 +79,7 @@
 		<param-name>appsecret</param-name>
 		<param-value>92663408c73b91e5749a0c5de20bd953</param-value>
 	</init-param>
-  	<!-- <load-on-startup>0</load-on-startup> -->
+  	<load-on-startup>0</load-on-startup>
   </servlet>
   
   <servlet>

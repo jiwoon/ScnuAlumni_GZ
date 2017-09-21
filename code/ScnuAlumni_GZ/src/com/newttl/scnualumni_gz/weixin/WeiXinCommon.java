@@ -60,7 +60,7 @@ public class WeiXinCommon {
 	/**
 	 * 公众号的  appID
 	 */
-	public static final String appID="wxdfead60d5e0dbcd6";
+	public static final String appID="wxdfead60d5e0dbcd6"; 
 	/**
 	 * 公众号的 appsecret
 	 */
@@ -95,6 +95,11 @@ public class WeiXinCommon {
 	 * 个人中心网页授权
 	 */
 	public static final String signUpUrl=testUrl+"/SignUpServlet";
+	
+	/**
+	 * 修改个人信息网页授权
+	 */
+	public static final String editUrl=testUrl+"/UserEditServlet";
 	
 	/**
 	 * 服务器中图片根目录
